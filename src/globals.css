@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* shadcn base styles */
+:host {
+  color: var(--foreground);
+  background-color: transparent;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:host *,
+:host *::before,
+:host *::after {
+  box-sizing: border-box;
+}
+
+:host a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+:host a:hover {
+  text-decoration: underline;
+}
+
+:host button,
+:host input,
+:host select,
+:host textarea {
+  font-family: inherit;
+}
+
+:host pre {
+  font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+:host .shc-surface {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  padding: 1rem;
+}
