@@ -5,14 +5,17 @@
 [![License](https://img.shields.io/github/license/jneerdael/status-banner-card.svg)](LICENSE)
 
 
-Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) component styles, Tailwind/Twind at runtime, and Jinja2-style templating to bind Home Assistant state. Uses per-shadow-root Twind + shadcn tokens mapped from the current HA theme so cards stay consistent with the user’s theme.
+Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) component styles, Tailwind/Twind at runtime, and Jinja2-style templating to bind Home Assistant state. Uses per-shadow-root Twind + shadcn tokens mapped from the current HA theme so cards stay consistent with the user's theme.
 
 ## Features
 
-- Jinja2-like templating (`{{ }}`, `{% for %}`) with helpers: `states()`, `state_attr()`, `range()`, `Math`, `Date`, `vars`.
-- shadcn-ui utility classes (buttons, badges, card, inputs, tabs, code/kbd) exposed for HA-friendly HTML usage; see [`src/components/index.ts`](src/components/index.ts).
-- HA theme → shadcn token mapping with fallbacks; see [`mapThemeVariables`](src/lib/theme.ts:34).
-- Per-card Twind instance scoped to the shadow DOM; see [`setupTwind`](src/lib/twind.ts:9).
+- **24+ shadcn/ui Components** - Complete library from simple badges to interactive accordions and sliders
+- **Jinja2 Templating** - Full templating support (`{{ }}`, `{% for %}`) with helpers: [`states()`](src/lib/template.ts:88), [`state_attr()`](src/lib/template.ts:88), [`range()`](src/lib/template.ts:88), `Math`, `Date`, `vars`
+- **Interactive Components** - Accordion, Collapsible, Toggle, Switch, RadioGroup, Checkbox, Select, Slider with full keyboard navigation
+- **CSS-Only Components** - Separator, Skeleton, Avatar, Alert, Progress, AspectRatio, Label, Textarea
+- **Theme Integration** - Automatic HA theme → shadcn token mapping with fallbacks; see [`mapThemeVariables()`](src/lib/theme.ts:34)
+- **Shadow DOM Scoped** - Per-card Twind instance for isolated styling; see [`setupTwind()`](src/lib/twind.ts:9)
+- **Accessibility First** - Full ARIA support, keyboard navigation, and screen reader compatibility
 
 ## Installation
 
@@ -105,7 +108,9 @@ Create a simple status card in your Lovelace dashboard:
 ### Next Steps
 
 - **[See Full Tutorial](TUTORIAL.md)** - Progressive examples from beginner to advanced
-- **[Component Reference](#using-shadcn-component-classes)** - All available shadcn components
+- **[Complete Component Library](#component-library)** - All 24+ available components
+- **[Component Reference](COMPONENTS.md)** - Detailed component documentation
+- **[Quick Reference](COMPONENT_REFERENCE.md)** - Copy-paste ready snippets
 - **[shadcn/ui Documentation](https://ui.shadcn.com/)** - Official component docs and design system
 
 ## Usage Examples
@@ -242,6 +247,76 @@ content: |
   </div>
 ```
 
+## Component Library
+
+The card includes **24+ shadcn/ui components** organized into categories for easy reference.
+
+### Layout & Structure
+- **[Card](COMPONENTS.md#card)** - Container with header, content, and footer sections
+- **[Separator](COMPONENTS.md#separator)** - Visual divider between content sections
+- **[Aspect Ratio](COMPONENTS.md#aspect-ratio)** - Maintain consistent width-to-height ratios
+
+### Typography & Content
+- **[Label](COMPONENTS.md#label)** - Form labels and text indicators
+- **[Badge](COMPONENTS.md#badge)** - Status indicators and tags
+- **[Alert](COMPONENTS.md#alert)** - Contextual feedback messages
+
+### Forms & Inputs
+- **[Input](COMPONENTS.md#input)** - Text input field
+- **[Textarea](COMPONENTS.md#textarea)** - Multi-line text input
+- **[Checkbox](COMPONENTS.md#checkbox)** - Checkboxes with checked/indeterminate states
+- **[Radio Group](COMPONENTS.md#radiogroup)** - Radio button groups with single selection
+- **[Switch](COMPONENTS.md#switch)** - Toggle switches for on/off states
+- **[Select](COMPONENTS.md#select)** - Dropdown select menus
+- **[Slider](COMPONENTS.md#slider)** - Range sliders with drag interaction
+
+### Interactive Elements
+- **[Button](COMPONENTS.md#button)** - Clickable buttons with multiple variants
+- **[Toggle](COMPONENTS.md#toggle)** - Toggle buttons with pressed states
+- **[Accordion](COMPONENTS.md#accordion)** - Collapsible content sections
+- **[Collapsible](COMPONENTS.md#collapsible)** - Simple show/hide toggles
+- **[Tabs](COMPONENTS.md#tabs)** - Tab navigation for content organization
+
+### Feedback & Status
+- **[Progress](COMPONENTS.md#progress)** - Progress bars and indicators
+- **[Skeleton](COMPONENTS.md#skeleton)** - Loading state placeholders
+- **[Avatar](COMPONENTS.md#avatar)** - User profile images with fallbacks
+
+### Code & Data
+- **[Code](COMPONENTS.md#code)** - Inline code snippets
+- **[Kbd](COMPONENTS.md#kbd)** - Keyboard shortcut indicators
+
+### Quick Component Reference
+
+| Component | Type | Key Features |
+|-----------|------|--------------|
+| Accordion | Interactive | Collapsible sections, keyboard nav, single/multiple modes |
+| Alert | CSS-only | Contextual messages, variants (default, destructive, warning) |
+| Avatar | CSS-only | Profile images, fallback support, size variants |
+| Badge | CSS-only | Status tags, multiple color variants |
+| Button | CSS-only | Multiple variants, sizes, states |
+| Card | CSS-only | Structured container with header/content/footer |
+| Checkbox | Interactive | Checked/unchecked/indeterminate states |
+| Collapsible | Interactive | Simple toggle, smooth animations |
+| Input | CSS-only | Text input with variants |
+| Label | CSS-only | Form labels |
+| Progress | CSS-only | Progress bars, percentage display |
+| Radio Group | Interactive | Single selection, keyboard nav |
+| Select | Interactive | Dropdown menu, searchable options |
+| Separator | CSS-only | Visual dividers, horizontal/vertical |
+| Skeleton | CSS-only | Loading placeholders |
+| Slider | Interactive | Range input, drag/keyboard control |
+| Switch | Interactive | Toggle on/off states |
+| Tabs | CSS-only | Content organization |
+| Textarea | CSS-only | Multi-line text input |
+| Toggle | Interactive | Pressed/unpressed button states |
+
+**View detailed documentation:**
+- **[COMPONENTS.md](COMPONENTS.md)** - Complete component reference with examples
+- **[COMPONENT_REFERENCE.md](COMPONENT_REFERENCE.md)** - Quick copy-paste snippets
+- **[PHASE2_COMPONENTS.md](PHASE2_COMPONENTS.md)** - Interactive component details
+- **[TUTORIAL.md](TUTORIAL.md)** - Learn by building real examples
+
 ## Theming
 
 The card maps the active HA theme to shadcn tokens and legacy `--stc-*` vars; see [`mapThemeVariables`](src/lib/theme.ts:34). Colors and radii flow into Twind via `twind.config.js` (CSS-variable-backed palette). You can override per card:
@@ -260,13 +335,20 @@ style:
 
 ## Documentation
 
-### Component Reference
+### Getting Started
+- **[Quick Start Guide](#quick-start)** - Your first card in 5 minutes
+- **[TUTORIAL.md](TUTORIAL.md)** - Progressive learning from basics to advanced
+- **[HACS_SETUP.md](HACS_SETUP.md)** - HACS installation and configuration
 
-All available shadcn/ui components and their usage:
-- **[shadcn/ui Components](https://ui.shadcn.com/docs/components)** - Official component documentation
-- **[Available Classes](#using-shadcn-component-classes)** - Card-specific utility classes
-- **[TUTORIAL.md](TUTORIAL.md)** - Step-by-step learning guide
+### Component Documentation
+- **[COMPONENTS.md](COMPONENTS.md)** - Complete component library reference
+- **[COMPONENT_REFERENCE.md](COMPONENT_REFERENCE.md)** - Quick copy-paste cheat sheet
+- **[PHASE2_COMPONENTS.md](PHASE2_COMPONENTS.md)** - Interactive components deep dive
+- **[Available Classes](#using-shadcn-component-classes)** - Legacy utility classes
+
+### Advanced Topics
 - **[LIMITATIONS.md](LIMITATIONS.md)** - Known limitations and workarounds
+- **[Architecture Notes](#architecture-notes)** - Technical implementation details
 
 ### Design System
 
@@ -289,12 +371,28 @@ Explore shadcn components at **[ui.shadcn.com](https://ui.shadcn.com/)** for:
 - Twind setup: [`setupTwind`](src/lib/twind.ts:9) — per-card CSSOM sheet, deterministic class names.
 - Global styles: [`globals.css`](src/globals.css:1) — base shadcn host styles and `.shc-surface`.
 
-## Roadmap
+## Recent Updates
 
-- Expand component helper set to full shadcn coverage
-- Add action bindings and HA event helpers
-- Interactive form components with state management
+### Version 1.1.0 (Latest)
+- ✅ **16 New Components** - Complete Tier 1 and Tier 2 implementation
+- ✅ **Interactive Components** - Accordion, Collapsible, Toggle, Switch, RadioGroup, Checkbox, Select, Slider
+- ✅ **CSS Components** - Separator, Skeleton, Avatar, Alert, Progress, AspectRatio, Label, Textarea
+- ✅ **Full Accessibility** - ARIA attributes, keyboard navigation, screen reader support
+- ✅ **Component Registry** - Centralized component management system
+- ✅ **Comprehensive Documentation** - Complete guides for all components
+
+### Roadmap
+
+**Phase 3: Portal Components** (Planned)
+- Dialog, Popover, Tooltip, DropdownMenu
+- Advanced shadow DOM portal management
+- Overlay positioning and z-index management
+
+**Future Enhancements**
+- Action bindings for Home Assistant service calls
+- Form validation and state persistence
 - Advanced animation and transition utilities
+- Component theming and customization API
 
 ## License
 

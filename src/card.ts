@@ -2,6 +2,7 @@ import { h, render } from 'preact'
 import { setupTwind } from './lib/twind'
 import { renderTemplate, type HassLike } from './lib/template'
 import { mapThemeVariables } from './lib/theme'
+import { componentRegistry } from './components/index'
 
 declare const CARD_VERSION: string
 
@@ -123,6 +124,9 @@ export class ShadcdnTemplateCard extends HTMLElement {
     if (!this._tw) {
       const { tw } = setupTwind(this._root)
       this._tw = tw
+      
+      // Inject all component styles into shadow root
+      componentRegistry.initAll(this._root)
     }
   }
 

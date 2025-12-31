@@ -1,3 +1,82 @@
+/**
+ * Shadcn Component Library for Home Assistant Cards
+ *
+ * This module exports all shadcn/ui components adapted for use in Home Assistant
+ * custom cards with shadow DOM support.
+ */
+
+import { componentRegistry } from '../lib/component-registry'
+
+// Import Tier 1 components (CSS-only)
+import { separatorComponent, separator } from './separator'
+import { skeletonComponent, skeleton } from './skeleton'
+import { avatarComponent, avatar } from './avatar'
+import { alertComponent, alert } from './alert'
+import { progressComponent, progress, progressTransform } from './progress'
+import { aspectRatioComponent, aspectRatio, customAspectRatio } from './aspect-ratio'
+import { labelComponent, label } from './label'
+import { textareaComponent, textarea } from './textarea'
+
+// Import Tier 2 components (Interactive)
+import { accordionComponent, accordion } from './accordion'
+import { collapsibleComponent, collapsible } from './collapsible'
+import { toggleComponent, toggle } from './toggle'
+import { switchComponent, switchClass } from './switch'
+import { radioGroupComponent, radioGroup } from './radio-group'
+import { checkboxComponent, checkbox } from './checkbox'
+import { selectComponent, select } from './select'
+import { sliderComponent, slider } from './slider'
+
+// Register all components
+componentRegistry.registerAll([
+  // Tier 1: CSS-only components
+  separatorComponent,
+  skeletonComponent,
+  avatarComponent,
+  alertComponent,
+  progressComponent,
+  aspectRatioComponent,
+  labelComponent,
+  textareaComponent,
+  // Tier 2: Interactive components
+  accordionComponent,
+  collapsibleComponent,
+  toggleComponent,
+  switchComponent,
+  radioGroupComponent,
+  checkboxComponent,
+  selectComponent,
+  sliderComponent,
+])
+
+// Export component helper functions
+export {
+  // Tier 1
+  separator,
+  skeleton,
+  avatar,
+  alert,
+  progress,
+  progressTransform,
+  aspectRatio,
+  customAspectRatio,
+  label,
+  textarea,
+  // Tier 2
+  accordion,
+  collapsible,
+  toggle,
+  switchClass,
+  radioGroup,
+  checkbox,
+  select,
+  slider,
+}
+
+// Export component registry
+export { componentRegistry }
+
+// Legacy shadcn utility classes (maintained for backward compatibility)
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'
 
 const buttonBase =
@@ -29,9 +108,7 @@ export const shadcn = {
   },
   card: 'shc-surface flex flex-col gap-3',
   input: inputBase,
-  textarea: `${inputBase} min-h-[120px]`,
   select: `${inputBase} pr-10`,
-  label: 'text-sm font-medium leading-none text-[var(--foreground)]',
   checkbox: 'shc-checkbox',
   switch: 'shc-switch',
   tabsList:

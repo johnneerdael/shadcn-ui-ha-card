@@ -1484,7 +1484,391 @@ Experiment with these patterns and create your own unique dashboard cards!
 
 ---
 
+## Tutorial 6: Advanced Components Showcase
+
+### Goal
+Demonstrate all new Phase 1 and Phase 2 components in a comprehensive interactive dashboard.
+
+### Code
+
+```yaml
+type: custom:shadcdn-template-card
+title: Advanced Components Demo
+variables:
+  devices:
+    - name: Living Room
+      temp: 22.5
+      humidity: 45
+      lights_on: 3
+      motion: true
+    - name: Bedroom
+      temp: 20.1
+      humidity: 52
+      lights_on: 1
+      motion: false
+    - name: Kitchen
+      temp: 23.8
+      humidity: 58
+      lights_on: 2
+      motion: true
+content: |
+  <div class="space-y-4">
+    
+    <!-- Accordion FAQ Section -->
+    <div class="shc-card">
+      <div class="shc-card-header">
+        <div class="shc-card-title">📚 Frequently Asked Questions</div>
+      </div>
+      <div class="shc-card-content">
+        <div class="shc-accordion" data-accordion data-type="single" data-collapsible="true">
+          <div class="shc-accordion-item" data-value="faq-1">
+            <button class="shc-accordion-trigger" data-accordion-trigger aria-expanded="false">
+              <span>How do I control my lights?</span>
+              <svg class="shc-accordion-chevron" width="15" height="15" viewBox="0 0 15 15">
+                <path d="M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z" fill="currentColor"/>
+              </svg>
+            </button>
+            <div class="shc-accordion-content" data-accordion-content data-state="closed">
+              <div class="shc-accordion-content-inner">
+                Use the switches below to toggle individual lights, or use the sliders to adjust brightness levels.
+              </div>
+            </div>
+          </div>
+          
+          <div class="shc-accordion-item" data-value="faq-2">
+            <button class="shc-accordion-trigger" data-accordion-trigger aria-expanded="false">
+              <span>What do the progress bars show?</span>
+              <svg class="shc-accordion-chevron" width="15" height="15" viewBox="0 0 15 15">
+                <path d="M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z" fill="currentColor"/>
+              </svg>
+            </button>
+            <div class="shc-accordion-content" data-accordion-content data-state="closed">
+              <div class="shc-accordion-content-inner">
+                Progress bars indicate temperature and humidity levels relative to comfortable ranges.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Interactive Form with All Input Types -->
+    <div class="shc-card">
+      <div class="shc-card-header">
+        <div class="shc-card-title">⚙️ Device Settings</div>
+        <div class="shc-card-description">Configure your smart home devices</div>
+      </div>
+      <div class="shc-card-content space-y-4">
+        
+        <!-- Text Input with Label -->
+        <div class="space-y-2">
+          <label class="shc-label" for="device-name">Device Name</label>
+          <input id="device-name" type="text" class="shc-input" placeholder="My Smart Device" />
+        </div>
+        
+        <!-- Textarea -->
+        <div class="space-y-2">
+          <label class="shc-label" for="notes">Notes</label>
+          <textarea id="notes" class="shc-textarea" placeholder="Add device notes..." rows="3"></textarea>
+        </div>
+        
+        <!-- Separator -->
+        <div class="shc-separator" role="separator"></div>
+        
+        <!-- Radio Group -->
+        <div class="space-y-2">
+          <label class="shc-label">Device Type</label>
+          <div class="shc-radio-group" data-radio-group role="radiogroup" aria-label="Device Type">
+            <label class="shc-radio-item">
+              <button class="shc-radio-button" data-radio role="radio" aria-checked="true" data-value="light">
+                <span class="shc-radio-indicator"></span>
+              </button>
+              <span class="shc-radio-label">💡 Light</span>
+            </label>
+            <label class="shc-radio-item">
+              <button class="shc-radio-button" data-radio role="radio" aria-checked="false" data-value="sensor">
+                <span class="shc-radio-indicator"></span>
+              </button>
+              <span class="shc-radio-label">🌡️ Sensor</span>
+            </label>
+            <label class="shc-radio-item">
+              <button class="shc-radio-button" data-radio role="radio" aria-checked="false" data-value="switch">
+                <span class="shc-radio-indicator"></span>
+              </button>
+              <span class="shc-radio-label">🔌 Switch</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Switches -->
+        <div class="space-y-3">
+          <label class="shc-label">Features</label>
+          <label class="shc-switch-wrapper">
+            <button class="shc-switch" data-switch role="switch" aria-checked="true">
+              <span class="shc-switch-thumb"></span>
+            </button>
+            <span class="shc-switch-label">Enable Automation</span>
+          </label>
+          <label class="shc-switch-wrapper">
+            <button class="shc-switch" data-switch role="switch" aria-checked="false">
+              <span class="shc-switch-thumb"></span>
+            </button>
+            <span class="shc-switch-label">Send Notifications</span>
+          </label>
+        </div>
+        
+        <!-- Checkboxes -->
+        <div class="space-y-3">
+          <label class="shc-label">Advanced Options</label>
+          <label class="shc-checkbox-wrapper">
+            <button class="shc-checkbox" data-checkbox role="checkbox" aria-checked="true">
+              <svg class="shc-checkbox-indicator" width="15" height="15" viewBox="0 0 15 15">
+                <path d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z" fill="currentColor"/>
+              </svg>
+            </button>
+            <span class="shc-checkbox-label">Enable debug logging</span>
+          </label>
+          <label class="shc-checkbox-wrapper">
+            <button class="shc-checkbox" data-checkbox role="checkbox" aria-checked="false">
+              <span class="shc-checkbox-indicator" width="15" height="15" viewBox="0 0 15 15">
+                <path d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z" fill="currentColor"/>
+              </svg>
+            </button>
+            <span class="shc-checkbox-label">Auto-update firmware</span>
+          </label>
+        </div>
+        
+        <!-- Collapsible Advanced Settings -->
+        <div class="shc-collapsible" data-collapsible>
+          <button class="shc-collapsible-trigger shc-btn shc-btn-ghost w-full" data-collapsible-trigger aria-expanded="false">
+            🔽 Advanced Settings
+          </button>
+          <div class="shc-collapsible-content" data-collapsible-content data-state="closed">
+            <div class="shc-collapsible-content-inner space-y-3 mt-3">
+              <!-- Select Dropdown -->
+              <div class="space-y-2">
+                <label class="shc-label">Update Channel</label>
+                <div class="shc-select" data-select>
+                  <button class="shc-select-trigger" data-select-trigger aria-expanded="false">
+                    <span class="shc-select-value" data-select-value data-placeholder="Select channel..."></span>
+                    <svg class="shc-select-icon" width="15" height="15" viewBox="0 0 15 15">
+                      <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor"/>
+                    </svg>
+                  </button>
+                  <div class="shc-select-content" data-select-content data-state="closed">
+                    <div class="shc-select-item" data-select-item data-value="stable">Stable</div>
+                    <div class="shc-select-item" data-select-item data-value="beta">Beta</div>
+                    <div class="shc-select-item" data-select-item data-value="dev">Development</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Alert -->
+              <div class="shc-alert">
+                <div class="shc-alert-title">⚠️ Warning</div>
+                <div class="shc-alert-description">
+                  Changing advanced settings may affect device stability.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shc-card-footer flex gap-2">
+        <button class="shc-btn shc-btn-primary flex-1">Save Changes</button>
+        <button class="shc-btn shc-btn-ghost">Cancel</button>
+      </div>
+    </div>
+    
+    <!-- Interactive Dashboard with Sliders -->
+    <div class="shc-card">
+      <div class="shc-card-header">
+        <div class="shc-card-title">🎛️ Room Controls</div>
+      </div>
+      <div class="shc-card-content space-y-4">
+        {% for device in devices %}
+        <div class="shc-surface p-4 rounded-lg">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <div class="shc-avatar shc-avatar-sm">
+                <div class="shc-avatar-fallback">{{ device.name[0] }}</div>
+              </div>
+              <div>
+                <div class="font-semibold">{{ device.name }}</div>
+                <div class="text-xs text-[var(--muted-foreground)]">
+                  {{ device.lights_on }} lights active
+                </div>
+              </div>
+            </div>
+            <span class="shc-badge {{ device.motion ? 'shc-badge-primary' : '' }}">
+              {{ device.motion ? '👤 Occupied' : '💤 Empty' }}
+            </span>
+          </div>
+          
+          <!-- Temperature Display with Progress -->
+          <div class="space-y-2 mb-3">
+            <div class="flex justify-between text-sm">
+              <span>Temperature</span>
+              <span class="font-semibold">{{ device.temp }}°C</span>
+            </div>
+            <div class="shc-progress">
+              <div class="shc-progress-indicator" style="width: {{ ((device.temp - 15) / 15 * 100)|int }}%"></div>
+            </div>
+          </div>
+          
+          <!-- Humidity with Progress -->
+          <div class="space-y-2 mb-3">
+            <div class="flex justify-between text-sm">
+              <span>Humidity</span>
+              <span class="font-semibold">{{ device.humidity }}%</span>
+            </div>
+            <div class="shc-progress">
+              <div class="shc-progress-indicator" style="width: {{ device.humidity }}%"></div>
+            </div>
+          </div>
+          
+          <!-- Brightness Slider -->
+          <div class="space-y-2">
+            <label class="shc-label text-xs">Brightness Control</label>
+            <div class="shc-slider" data-slider data-min="0" data-max="100" data-step="1" data-value="{{ (device.lights_on * 33)|int }}">
+              <div class="shc-slider-track">
+                <div class="shc-slider-range"></div>
+              </div>
+              <div class="shc-slider-thumb" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ (device.lights_on * 33)|int }}" tabindex="0"></div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- Data Visualization with Multiple Components -->
+    <div class="shc-card">
+      <div class="shc-card-header">
+        <div class="shc-card-title">📊 System Status</div>
+        <div class="shc-card-description">Real-time monitoring dashboard</div>
+      </div>
+      <div class="shc-card-content space-y-4">
+        
+        <!-- Loading Skeletons (can be shown conditionally) -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="shc-surface p-3 rounded-lg text-center">
+            <div class="text-xs text-[var(--muted-foreground)] mb-1">Active Devices</div>
+            <div class="text-2xl font-bold">
+              {{ devices|length }}
+            </div>
+          </div>
+          <div class="shc-surface p-3 rounded-lg text-center">
+            <div class="text-xs text-[var(--muted-foreground)] mb-1">Total Lights</div>
+            <div class="text-2xl font-bold">
+              {% set total_lights = 0 %}
+              {% for d in devices %}
+                {% set total_lights = total_lights + d.lights_on %}
+              {% endfor %}
+              {{ total_lights }}
+            </div>
+          </div>
+          <div class="shc-surface p-3 rounded-lg text-center">
+            <div class="text-xs text-[var(--muted-foreground)] mb-1">Occupied</div>
+            <div class="text-2xl font-bold">
+              {% set occupied = 0 %}
+              {% for d in devices %}
+                {% if d.motion %}{% set occupied = occupied + 1 %}{% endif %}
+              {% endfor %}
+              {{ occupied }}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Aspect Ratio Example -->
+        <div>
+          <label class="shc-label text-xs mb-2 block">Security Camera Feed</label>
+          <div class="shc-aspect-ratio shc-aspect-video">
+            <div class="w-full h-full bg-[var(--muted)] rounded flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-4xl mb-2">📹</div>
+                <div class="text-sm text-[var(--muted-foreground)]">Camera Feed Placeholder</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Toggle Buttons -->
+        <div class="flex gap-2 flex-wrap">
+          <button class="shc-toggle" data-toggle aria-pressed="true">
+            All Lights
+          </button>
+          <button class="shc-toggle shc-toggle-outline" data-toggle aria-pressed="false">
+            Security
+          </button>
+          <button class="shc-toggle shc-toggle-outline" data-toggle aria-pressed="false">
+            Climate
+          </button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+```
+
+### Features Demonstrated
+
+1. **Accordion Component**
+   - FAQ-style collapsible sections
+   - Single-item expansion mode
+   - Smooth animations with chevron indicators
+
+2. **Complete Form Components**
+   - Text inputs with labels
+   - Textarea for multi-line input
+   - Radio button groups
+   - Switch toggles
+   - Checkboxes with multiple states
+   - Select dropdowns
+
+3. **Collapsible Advanced Settings**
+   - Toggle to show/hide additional options
+   - Nested components within collapsible
+
+4. **Slider Controls**
+   - Interactive brightness sliders
+   - Dynamic values from device data
+   - Keyboard and mouse control
+
+5. **Progress Indicators**
+   - Temperature and humidity visualization
+   - Percentage-based progress bars
+   - Color-coded status
+
+6. **Avatar Components**
+   - User/room initials
+   - Multiple sizes
+   - Fallback support
+
+7. **Aspect Ratio Container**
+   - 16:9 video placeholder
+   - Maintains proportions responsively
+
+8. **Toggle Buttons**
+   - Pressed/unpressed states
+   - Outline variants
+   - Multiple toggles in a group
+
+9. **Alert Messages**
+   - Warning alerts in collapsible sections
+   - Contextual feedback
+
+10. **Badge Status Indicators**
+    - Occupancy status
+    - Dynamic styling based on state
+
+This comprehensive example showcases all Phase 1 and Phase 2 components working together in a realistic smart home dashboard scenario.
+
+---
+
 **Need Help?**
 - Check the [README](README.md) for installation and basic usage
-- Review [BUG_ANALYSIS.md](BUG_ANALYSIS.md) for known limitations
-- See [FIXES_APPLIED.md](FIXES_APPLIED.md) for recent improvements
+- Review [COMPONENTS.md](COMPONENTS.md) for complete component reference
+- See [COMPONENT_REFERENCE.md](COMPONENT_REFERENCE.md) for quick copy-paste snippets
+- Explore [PHASE2_COMPONENTS.md](PHASE2_COMPONENTS.md) for interactive component details
+- Visit [LIMITATIONS.md](LIMITATIONS.md) for known limitations

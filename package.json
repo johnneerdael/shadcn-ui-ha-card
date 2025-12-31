@@ -1,11 +1,23 @@
 {
   "name": "shadcn-template-card",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "A Home Assistant custom card integrating shadcn-ui components with Jinja2 templating",
+  "description": "Home Assistant custom card with 24+ shadcn/ui components, interactive controls, and Jinja2 templating. Features accordions, sliders, switches, checkboxes, and more with full accessibility support.",
   "author": "Your Name",
   "license": "MIT",
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "shadcn-ui",
+    "shadcn",
+    "tailwind",
+    "components",
+    "ui-library",
+    "jinja2",
+    "templating"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
