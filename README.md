@@ -16,7 +16,25 @@ Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) c
 
 ## Installation
 
-### Manual (local / HACS custom repo)
+### HACS (Recommended)
+
+1. **Add Custom Repository**
+   - Open HACS in Home Assistant
+   - Click the 3-dot menu → **Custom repositories**
+   - Add repository URL: `https://github.com/YOUR_USERNAME/shadcdn-template-card`
+   - Category: **Lovelace**
+   - Click **Add**
+
+2. **Install the Card**
+   - Search for "Shadcn Template Card" in HACS
+   - Click **Download**
+   - Restart Home Assistant
+
+3. **Add to Dashboard**
+   - The card will be automatically available in your dashboard editor
+   - No manual resource configuration needed!
+
+### Manual Installation
 
 1. Build the bundle:
 
@@ -38,7 +56,7 @@ Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) c
          type: module
    ```
 
-4. Restart Lovelace (or reload resources) and add the card.
+4. Restart Home Assistant and add the card.
 
 ### Development
 
@@ -46,7 +64,51 @@ Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) c
 - Type-check: `npm run type-check`
 - Lint: `npm run lint`
 
-## Usage
+## Quick Start
+
+### Your First Card
+
+Create a simple status card in your Lovelace dashboard:
+
+1. **Add Card via UI**
+   - Edit your dashboard
+   - Click "Add Card"
+   - Search for "Shadcn Template Card"
+   - Click to add
+
+2. **Configure in YAML**
+   ```yaml
+   type: custom:shadcdn-template-card
+   title: Welcome
+   content: |
+     <div class="space-y-3">
+       <div class="shc-card">
+         <div class="shc-card-header">
+           <div class="shc-card-title">Hello, Home Assistant!</div>
+           <div class="shc-card-description">
+             Your first shadcn card with beautiful components
+           </div>
+         </div>
+         <div class="shc-card-content">
+           <p class="text-sm text-[var(--muted-foreground)]">
+             Current time: {{ Date.now() }}
+           </p>
+         </div>
+       </div>
+     </div>
+   ```
+
+3. **Save and View**
+   - Click "Save" in the card editor
+   - Your styled card appears instantly!
+
+### Next Steps
+
+- **[See Full Tutorial](TUTORIAL.md)** - Progressive examples from beginner to advanced
+- **[Component Reference](#using-shadcn-component-classes)** - All available shadcn components
+- **[shadcn/ui Documentation](https://ui.shadcn.com/)** - Official component docs and design system
+
+## Usage Examples
 
 ### Basic Card
 
@@ -196,6 +258,30 @@ style:
   --primary-foreground: #0b1224
 ```
 
+## Documentation
+
+### Component Reference
+
+All available shadcn/ui components and their usage:
+- **[shadcn/ui Components](https://ui.shadcn.com/docs/components)** - Official component documentation
+- **[Available Classes](#using-shadcn-component-classes)** - Card-specific utility classes
+- **[TUTORIAL.md](TUTORIAL.md)** - Step-by-step learning guide
+- **[LIMITATIONS.md](LIMITATIONS.md)** - Known limitations and workarounds
+
+### Design System
+
+This card implements the **[shadcn/ui design system](https://ui.shadcn.com/)** with:
+- **Radix UI primitives** - Accessible component foundation
+- **Tailwind CSS utilities** - Via runtime Twind engine
+- **CSS variables** - Automatic HA theme mapping
+- **Type-safe** - Full TypeScript support
+
+Explore shadcn components at **[ui.shadcn.com](https://ui.shadcn.com/)** for:
+- Component examples and live demos
+- Design principles and guidelines
+- Accessibility patterns
+- Color system and theming
+
 ## Architecture Notes
 
 - Card custom element: [`ShadcdnTemplateCard`](src/card.ts:17) — attaches a shadow root, mounts Twind, renders templated HTML, injects theme vars.
@@ -205,9 +291,10 @@ style:
 
 ## Roadmap
 
-- Expand component helper set to full shadcn coverage.
-- Add action bindings and HA event helpers.
-- Publish HACS manifest + release assets.
+- Expand component helper set to full shadcn coverage
+- Add action bindings and HA event helpers
+- Interactive form components with state management
+- Advanced animation and transition utilities
 
 ## License
 
