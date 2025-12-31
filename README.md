@@ -1,5 +1,10 @@
 # shadcdn-template-card
 
+[![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![GitHub Release](https://img.shields.io/github/release/jneerdael/status-banner-card.svg)](https://github.com/jneerdael/status-banner-card/releases)
+[![License](https://img.shields.io/github/license/jneerdael/status-banner-card.svg)](LICENSE)
+
+
 Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) component styles, Tailwind/Twind at runtime, and Jinja2-style templating to bind Home Assistant state. Uses per-shadow-root Twind + shadcn tokens mapped from the current HA theme so cards stay consistent with the user’s theme.
 
 ## Features
