@@ -163,8 +163,6 @@ export function initSelect(shadowRoot: ShadowRoot): void {
     
     if (!trigger || !content || !valueEl || items.length === 0) return
     
-    let selectedValue: string | null = null
-    
     // Set initial state
     content.dataset.state = 'closed'
     trigger.setAttribute('aria-expanded', 'false')
@@ -172,7 +170,6 @@ export function initSelect(shadowRoot: ShadowRoot): void {
     // Check for initially selected item
     const initialSelected = items.find(item => item.dataset.selected === 'true')
     if (initialSelected) {
-      selectedValue = initialSelected.dataset.value || null
       valueEl.textContent = initialSelected.textContent
     }
     
@@ -201,7 +198,6 @@ export function initSelect(shadowRoot: ShadowRoot): void {
         // Update selection
         items.forEach(i => i.dataset.selected = 'false')
         item.dataset.selected = 'true'
-        selectedValue = value
         
         // Update display value
         valueEl.textContent = item.textContent

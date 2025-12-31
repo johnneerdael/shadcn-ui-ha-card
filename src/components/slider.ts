@@ -139,19 +139,12 @@ export function initSlider(shadowRoot: ShadowRoot): void {
     updateSliderPosition(sliderEl, track, range, thumb, state)
     
     // Mouse/Touch drag handlers
-    let startX = 0
-    let startValue = 0
-    
     const handleStart = (e: MouseEvent | TouchEvent) => {
       if (sliderEl.getAttribute('aria-disabled') === 'true') return
       
       e.preventDefault()
       state.isDragging = true
       thumb.dataset.dragging = 'true'
-      
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-      startX = clientX
-      startValue = state.value
       
       document.addEventListener('mousemove', handleMove)
       document.addEventListener('mouseup', handleEnd)
