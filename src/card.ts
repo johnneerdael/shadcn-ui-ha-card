@@ -54,7 +54,7 @@ export class ShadcdnTemplateCard extends HTMLElement {
     this._isConnected = true
     // Ensure Twind is initialized when element is connected
     this.ensureTwind()
-    // If config was set before connection, update now
+    // If config was set before connection, update again to ensure everything is ready
     if (this._config) {
       this.update()
     }
@@ -79,11 +79,11 @@ export class ShadcdnTemplateCard extends HTMLElement {
 
     this._config = { ...config }
     
-    // Only initialize and update if element is connected
-    if (this._isConnected) {
-      this.ensureTwind()
-      this.update()
-    }
+    // CRITICAL: Always initialize and render, even if not connected yet
+    // Home Assistant calls setConfig() before connectedCallback() and needs
+    // content in the shadow root immediately to stop showing loading spinner
+    this.ensureTwind()
+    this.update()
   }
 
   set hass(hass: HassLike) {
@@ -142,7 +142,10 @@ export class ShadcdnTemplateCard extends HTMLElement {
   }
 
   private update(): void {
-    if (!this._config || !this._tw || !this._isConnected) return
+    // Render even if not connected - Home Assistant needs content immediately after setConfig()
+    if (!this._config || !this._tw) {
+      return
+    }
 
     const title = this._config.title ?? 'shadcdn-template-card'
     const raw = this._config.content ?? 'Template content goes here.'
