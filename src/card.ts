@@ -3,14 +3,13 @@ import { renderTemplate, type HassLike } from './lib/template'
 import { mapThemeVariables } from './lib/theme'
 import { componentRegistry } from './components/index'
 
-declare const CARD_VERSION: string
+// Support adoptedStyleSheets in all browsers
+import 'construct-style-sheets-polyfill'
 
-// Type declaration for the bundled CSS styles
-declare global {
-  interface Window {
-    __SHADCN_CARD_STYLES__?: string
-  }
-}
+// Import CSS as inline string (Vite's ?inline query)
+import generatedCss from './globals.css?inline'
+
+declare const CARD_VERSION: string
 
 export type TemplateVars = Record<string, unknown>
 
@@ -146,22 +145,19 @@ export class shadcnTemplateCard extends HTMLElement {
 
   /**
    * Inject bundled Tailwind CSS into the shadow root
-   * This replaces the runtime Twind approach with build-time CSS
+   * Uses adoptedStyleSheets API for efficient CSS sharing across shadow roots
    */
   private injectStyles(): void {
     if (this._stylesInjected) return
 
-    // Get the bundled CSS from the global variable set by vite-plugin-css-injected-by-js
-    const bundledStyles = window.__SHADCN_CARD_STYLES__
+    // Create and populate a CSSStyleSheet with the bundled CSS
+    const sheet = new CSSStyleSheet()
+    sheet.replaceSync(generatedCss)
 
-    if (bundledStyles) {
-      const styleEl = document.createElement('style')
-      styleEl.setAttribute('data-shadcn-styles', 'bundled')
-      styleEl.textContent = bundledStyles
-      this._root.appendChild(styleEl)
-    }
+    // Apply to shadow root using adoptedStyleSheets API
+    this._root.adoptedStyleSheets = [sheet]
 
-    // Inject component-specific styles from the registry
+    // Initialize component-specific styles from the registry
     componentRegistry.initAll(this._root)
 
     this._stylesInjected = true

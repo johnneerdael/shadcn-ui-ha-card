@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import { resolve } from 'path'
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
@@ -35,27 +34,10 @@ function getPackageVersionNumber(): string {
 // ╚══════════════════════════════════════════════════════════════════════════╝
 export default defineConfig({
   // ┌────────────────────────────────────────────────────────────────────────┐
-  // │ PLUGIN ECOSYSTEM: Preact transformation + CSS inline injection         │
+  // │ PLUGIN ECOSYSTEM: Preact transformation                                │
   // └────────────────────────────────────────────────────────────────────────┘
   plugins: [
     preact(),
-    // CSS injection plugin for Shadow DOM support
-    // Bundles Tailwind CSS into the JS file and injects it at runtime
-    cssInjectedByJsPlugin({
-      styleId: 'shadcn-card-styles',
-      // Use Shadow DOM injection - styles will be injected into each card's shadow root
-      injectCodeFunction: (cssCode: string) => {
-        // This code runs at runtime to inject styles
-        // The card's connectedCallback will handle Shadow DOM injection
-        return `
-          (function() {
-            if (typeof window !== 'undefined') {
-              window.__SHADCN_CARD_STYLES__ = ${JSON.stringify(cssCode)};
-            }
-          })();
-        `;
-      },
-    }),
   ],
 
   // ┌────────────────────────────────────────────────────────────────────────┐
@@ -113,15 +95,15 @@ export default defineConfig({
       input: createAbsolutePath('src', 'main.ts'),
       output: {
         // CRITICAL: Use ES module format for Home Assistant compatibility
-        // IIFE format wraps code in anonymous function, preventing global access
-        // to custom element registration. ES format allows proper module exports
-        // that Home Assistant can load and execute correctly.
+        // ES modules execute synchronously when loaded, ensuring
+        // customElements.define runs immediately before HA checks for it.
+        // (Same format used by working status-banner-card)
         format: 'es',
         entryFileNames: 'shadcn-template-card.js',
         // Prevent code splitting - everything in one file
         inlineDynamicImports: true,
         manualChunks: undefined,
-        
+
         // Asset file naming patterns
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'style.css') {

@@ -4,17 +4,9 @@ import type { shadcnTemplateCardConfig } from './card'
 
 declare const CARD_VERSION: string
 
-// CRITICAL: Registration must happen IMMEDIATELY and synchronously
-// Home Assistant expects the custom element to be defined when the script loads
-// Using try/catch instead of conditional check to ensure synchronous execution
-try {
-  customElements.define('shadcn-template-card', shadcnTemplateCard)
-} catch (e) {
-  // Already defined - this is fine (NotSupportedError)
-  if (!(e instanceof DOMException && e.name === 'NotSupportedError')) {
-    throw e
-  }
-}
+// Registration must happen synchronously at module load
+// Using direct call without try/catch to expose any real errors
+customElements.define('shadcn-template-card', shadcnTemplateCard)
 
 // Register card in the card picker UI
 // This is required for the card to appear in Home Assistant's "Add Card" dialog
