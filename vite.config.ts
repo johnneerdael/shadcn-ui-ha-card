@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import { resolve } from 'path'
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
@@ -38,7 +39,23 @@ export default defineConfig({
   // └────────────────────────────────────────────────────────────────────────┘
   plugins: [
     preact(),
-    // CSS is handled by Twind at runtime - no need for CSS injection plugin
+    // CSS injection plugin for Shadow DOM support
+    // Bundles Tailwind CSS into the JS file and injects it at runtime
+    cssInjectedByJsPlugin({
+      styleId: 'shadcn-card-styles',
+      // Use Shadow DOM injection - styles will be injected into each card's shadow root
+      injectCodeFunction: (cssCode: string) => {
+        // This code runs at runtime to inject styles
+        // The card's connectedCallback will handle Shadow DOM injection
+        return `
+          (function() {
+            if (typeof window !== 'undefined') {
+              window.__SHADCN_CARD_STYLES__ = ${JSON.stringify(cssCode)};
+            }
+          })();
+        `;
+      },
+    }),
   ],
 
   // ┌────────────────────────────────────────────────────────────────────────┐
@@ -100,7 +117,7 @@ export default defineConfig({
         // to custom element registration. ES format allows proper module exports
         // that Home Assistant can load and execute correctly.
         format: 'es',
-        entryFileNames: 'shadcdn-template-card.js',
+        entryFileNames: 'shadcn-template-card.js',
         // Prevent code splitting - everything in one file
         inlineDynamicImports: true,
         manualChunks: undefined,

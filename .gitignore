@@ -16,3 +16,6 @@ pnpm-debug.log*
 .turbo/
 .temp/
 tmp/
+
+# Auto Claude data directory
+.auto-claude/

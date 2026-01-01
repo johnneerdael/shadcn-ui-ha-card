@@ -1,4 +1,4 @@
-# shadcdn-template-card
+# shadcn-template-card
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/release/jneerdael/status-banner-card.svg)](https://github.com/jneerdael/status-banner-card/releases)
@@ -24,7 +24,7 @@ Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) c
 1. **Add Custom Repository**
    - Open HACS in Home Assistant
    - Click the 3-dot menu → **Custom repositories**
-   - Add repository URL: `https://github.com/YOUR_USERNAME/shadcdn-template-card`
+   - Add repository URL: `https://github.com/YOUR_USERNAME/shadcn-template-card`
    - Category: **Lovelace**
    - Click **Add**
 
@@ -46,16 +46,16 @@ Home Assistant custom card that renders arbitrary HTML using shadcn-ui (Radix) c
    npm run build
    ```
 
-   The output bundle is `dist/shadcdn-template-card.js`.
+   The output bundle is `dist/shadcn-template-card.js`.
 
-2. Copy `dist/shadcdn-template-card.js` to `config/www/shadcdn-template-card/` in Home Assistant.
+2. Copy `dist/shadcn-template-card.js` to `config/www/shadcn-template-card/` in Home Assistant.
 
 3. Add to Lovelace resources:
 
    ```yaml
    lovelace:
      resources:
-       - url: /local/shadcdn-template-card/shadcdn-template-card.js
+       - url: /local/shadcn-template-card/shadcn-template-card.js
          type: module
    ```
 
@@ -81,7 +81,7 @@ Create a simple status card in your Lovelace dashboard:
 
 2. **Configure in YAML**
    ```yaml
-   type: custom:shadcdn-template-card
+   type: custom:shadcn-template-card
    title: Welcome
    content: |
      <div class="space-y-3">
@@ -118,7 +118,7 @@ Create a simple status card in your Lovelace dashboard:
 ### Basic Card
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: HVAC
 content: |
   <div class="space-y-2">
@@ -136,7 +136,7 @@ content: |
 ### Looping with Jinja-style `for`
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: Sensors
 content: |
   <div class="grid grid-cols-2 gap-3">
@@ -153,7 +153,7 @@ content: |
 ### Custom Variables
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: Greetings
 variables:
   name: "Ada"
@@ -166,7 +166,7 @@ content: |
 The card exposes shadcn-style utility classes you can use directly in your HTML:
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: Component Examples
 content: |
   <div class="space-y-4">
@@ -206,7 +206,7 @@ content: |
 ### Conditional Rendering
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: Conditional
 content: |
   <div class="space-y-2">
@@ -221,7 +221,7 @@ content: |
 ### Using Range Helper
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: Range Example
 content: |
   <div class="grid grid-cols-5 gap-2">
@@ -236,7 +236,7 @@ content: |
 ### Math and Date Helpers
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: Helpers
 content: |
   <div class="space-y-2">
@@ -322,7 +322,7 @@ The card includes **24+ shadcn/ui components** organized into categories for eas
 The card maps the active HA theme to shadcn tokens and legacy `--stc-*` vars; see [`mapThemeVariables`](src/lib/theme.ts:34). Colors and radii flow into Twind via `twind.config.js` (CSS-variable-backed palette). You can override per card:
 
 ```yaml
-type: custom:shadcdn-template-card
+type: custom:shadcn-template-card
 title: Custom palette
 content: |
   <div class="shc-surface">
@@ -358,7 +358,7 @@ Having issues with the card? Check the **[Debugging Guide](DEBUGGING.md)** for c
 ### Quick Fixes
 
 **Card not appearing?**
-- Run `customElements.get('shadcdn-template-card')` in browser console
+- Run `customElements.get('shadcn-template-card')` in browser console
 - Should return the card class (not `undefined`)
 - See [Quick Diagnosis Checklist](DEBUGGING.md#quick-diagnosis-checklist)
 
@@ -382,15 +382,15 @@ Having issues with the card? Check the **[Debugging Guide](DEBUGGING.md)** for c
 
 ```javascript
 // Check if card is registered
-customElements.get('shadcdn-template-card');
+customElements.get('shadcn-template-card');
 
 // Check HACS registration
-window.customCards?.find(c => c.type === 'shadcdn-template-card');
+window.customCards?.find(c => c.type === 'shadcn-template-card');
 
 // Verify all components
-console.log(customElements.get('shadcdn-button'));
-console.log(customElements.get('shadcdn-input'));
-console.log(customElements.get('shadcdn-select'));
+console.log(customElements.get('shadcn-button'));
+console.log(customElements.get('shadcn-input'));
+console.log(customElements.get('shadcn-select'));
 ```
 
 ### Full Documentation
@@ -417,7 +417,7 @@ Explore shadcn components at **[ui.shadcn.com](https://ui.shadcn.com/)** for:
 
 ## Architecture Notes
 
-- Card custom element: [`ShadcdnTemplateCard`](src/card.ts:17) — attaches a shadow root, mounts Twind, renders templated HTML, injects theme vars.
+- Card custom element: [`shadcnTemplateCard`](src/card.ts:17) — attaches a shadow root, mounts Twind, renders templated HTML, injects theme vars.
 - Template engine: [`renderTemplate`](src/lib/template.ts:88) — handles nested `{% for %}` then `{{ ... }}` with helper context.
 - Twind setup: [`setupTwind`](src/lib/twind.ts:9) — per-card CSSOM sheet, deterministic class names.
 - Global styles: [`globals.css`](src/globals.css:1) — base shadcn host styles and `.shc-surface`.
