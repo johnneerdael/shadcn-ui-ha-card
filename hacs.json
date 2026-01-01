@@ -1,7 +1,5 @@
 {
   "name": "Shadcn Template Card",
-  "content_in_root": true,
   "render_readme": true,
-  "filename": "shadcn-template-card.js",
-  "homeassistant": "2023.11.0"
+  "filename": "shadcn-template-card.js"
 }

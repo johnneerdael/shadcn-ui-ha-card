@@ -1,3 +1,6 @@
+// Debug: Log immediately when script starts
+console.info('%c SHADCN-TEMPLATE-CARD ', 'background: #a855f7; color: white; font-weight: bold', 'Script loaded, registering element...')
+
 import './globals.css'
 import { shadcnTemplateCard } from './card'
 import type { shadcnTemplateCardConfig } from './card'
@@ -5,8 +8,9 @@ import type { shadcnTemplateCardConfig } from './card'
 declare const CARD_VERSION: string
 
 // Registration must happen synchronously at module load
-// Using direct call without try/catch to expose any real errors
 customElements.define('shadcn-template-card', shadcnTemplateCard)
+
+console.info('%c SHADCN-TEMPLATE-CARD ', 'background: #22c55e; color: white; font-weight: bold', 'Element registered successfully:', customElements.get('shadcn-template-card'))
 
 // Register card in the card picker UI
 // This is required for the card to appear in Home Assistant's "Add Card" dialog
