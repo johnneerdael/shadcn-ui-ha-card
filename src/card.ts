@@ -79,6 +79,10 @@ export class ShadcdnTemplateCard extends HTMLElement {
 
     this._config = { ...config }
     
+    // DEBUG LOGGING: Intentionally kept in production for troubleshooting
+    // These logs help users diagnose card loading issues in Home Assistant
+    console.log('shadcdn-template-card: setConfig() called with:', config)
+    
     // CRITICAL: Always initialize and render, even if not connected yet
     // Home Assistant calls setConfig() before connectedCallback() and needs
     // content in the shadow root immediately to stop showing loading spinner
@@ -122,11 +126,17 @@ export class ShadcdnTemplateCard extends HTMLElement {
 
   private ensureTwind(): void {
     if (!this._tw) {
-      const { tw } = setupTwind(this._root)
-      this._tw = tw
-      
-      // Inject all component styles into shadow root
-      componentRegistry.initAll(this._root)
+      try {
+        const { tw } = setupTwind(this._root)
+        this._tw = tw
+        
+        // Inject all component styles into shadow root
+        componentRegistry.initAll(this._root)
+      } catch (error) {
+        console.error('shadcdn-template-card: Failed to initialize Twind:', error)
+        // Set a fallback tw function that returns empty string to prevent crashes
+        this._tw = (() => '') as any
+      }
     }
   }
 
@@ -147,43 +157,54 @@ export class ShadcdnTemplateCard extends HTMLElement {
       return
     }
 
-    const title = this._config.title ?? 'shadcdn-template-card'
-    const raw = this._config.content ?? 'Template content goes here.'
-    const variables = this._config.variables ?? {}
-    const renderedContent = renderTemplate(raw, this._hass, variables)
-    const themeVars = this.getThemeVariables()
+    try {
+      const title = this._config.title ?? 'shadcdn-template-card'
+      const raw = this._config.content ?? 'Template content goes here.'
+      const variables = this._config.variables ?? {}
+      const renderedContent = renderTemplate(raw, this._hass, variables)
+      const themeVars = this.getThemeVariables()
 
-    const styleVars = Object.entries(themeVars).reduce<Record<string, string>>((acc, [key, value]) => {
-      acc[key] = String(value)
-      return acc
-    }, {})
+      const styleVars = Object.entries(themeVars).reduce<Record<string, string>>((acc, [key, value]) => {
+        acc[key] = String(value)
+        return acc
+      }, {})
 
-    const node = h(
-      'div',
-      {
-        class: this._tw(
-          'flex flex-col gap-2 p-4 rounded-lg bg-[var(--stc-card)] text-[var(--stc-fg)] shadow border border-[color:var(--stc-border)]'
-        ),
-        style: styleVars,
-      },
-      h('div', { class: this._tw('text-xs uppercase tracking-[0.14em] text-[var(--stc-muted-fg)]') }, title),
-      h(
-        'pre',
+      const node = h(
+        'div',
         {
           class: this._tw(
-            'text-xs font-mono whitespace-pre-wrap bg-[var(--stc-muted)] text-[var(--stc-fg)] p-3 rounded border border-[color:var(--stc-border)]'
+            'flex flex-col gap-2 p-4 rounded-lg bg-[var(--stc-card)] text-[var(--stc-fg)] shadow border border-[color:var(--stc-border)]'
           ),
+          style: styleVars,
         },
-        renderedContent
-      ),
-      h(
-        'div',
-        { class: this._tw('text-[10px] uppercase tracking-[0.08em] text-[color:var(--stc-muted-fg)]') },
-        `Version: ${typeof CARD_VERSION === 'string' ? CARD_VERSION : 'dev'}`
+        h('div', { class: this._tw('text-xs uppercase tracking-[0.14em] text-[var(--stc-muted-fg)]') }, title),
+        h(
+          'pre',
+          {
+            class: this._tw(
+              'text-xs font-mono whitespace-pre-wrap bg-[var(--stc-muted)] text-[var(--stc-fg)] p-3 rounded border border-[color:var(--stc-border)]'
+            ),
+          },
+          renderedContent
+        ),
+        h(
+          'div',
+          { class: this._tw('text-[10px] uppercase tracking-[0.08em] text-[color:var(--stc-muted-fg)]') },
+          `Version: ${typeof CARD_VERSION === 'string' ? CARD_VERSION : 'dev'}`
+        )
       )
-    )
 
-    render(node, this._root)
+      render(node, this._root)
+    } catch (error) {
+      console.error('shadcdn-template-card: Failed to render card:', error)
+      // Render error state in shadow root
+      this._root.innerHTML = `
+        <div style="padding: 16px; color: #ef4444; border: 1px solid #ef4444; border-radius: 8px; background: rgba(239, 68, 68, 0.1);">
+          <strong>Error rendering card:</strong>
+          <pre style="margin-top: 8px; font-size: 12px; white-space: pre-wrap;">${error instanceof Error ? error.message : String(error)}</pre>
+        </div>
+      `
+    }
   }
 
   private getSelectedTheme(hass: HassLike): string | undefined {

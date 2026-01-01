@@ -348,7 +348,58 @@ style:
 
 ### Advanced Topics
 - **[LIMITATIONS.md](LIMITATIONS.md)** - Known limitations and workarounds
+- **[DEBUGGING.md](DEBUGGING.md)** - Troubleshooting and deployment guide
 - **[Architecture Notes](#architecture-notes)** - Technical implementation details
+
+## Troubleshooting
+
+Having issues with the card? Check the **[Debugging Guide](DEBUGGING.md)** for comprehensive troubleshooting:
+
+### Quick Fixes
+
+**Card not appearing?**
+- Run `customElements.get('shadcdn-template-card')` in browser console
+- Should return the card class (not `undefined`)
+- See [Quick Diagnosis Checklist](DEBUGGING.md#quick-diagnosis-checklist)
+
+**Card appears but unstyled?**
+- Check browser console for Twind initialization errors
+- Clear browser cache (Ctrl+F5 / Cmd+Shift+R)
+- See [Twind CSS Issues](DEBUGGING.md#issue-3-twind-css-not-loading)
+
+**Build errors?**
+- Ensure `format: 'es'` is set in [`vite.config.ts`](vite.config.ts:1)
+- Run `npm install` to update dependencies
+- See [Build Troubleshooting](DEBUGGING.md#build-troubleshooting)
+
+**After updating the card:**
+1. Clear browser cache
+2. Hard reload (Ctrl+F5 / Cmd+Shift+R)
+3. Restart Home Assistant if needed
+4. See [Deployment Checklist](DEBUGGING.md#deployment-checklist)
+
+### Essential Console Commands
+
+```javascript
+// Check if card is registered
+customElements.get('shadcdn-template-card');
+
+// Check HACS registration
+window.customCards?.find(c => c.type === 'shadcdn-template-card');
+
+// Verify all components
+console.log(customElements.get('shadcdn-button'));
+console.log(customElements.get('shadcdn-input'));
+console.log(customElements.get('shadcdn-select'));
+```
+
+### Full Documentation
+
+For detailed troubleshooting steps, see **[DEBUGGING.md](DEBUGGING.md)**:
+- [Common Issues and Solutions](DEBUGGING.md#common-issues-and-solutions)
+- [Browser Console Debugging](DEBUGGING.md#browser-console-debugging)
+- [Deployment Checklist](DEBUGGING.md#deployment-checklist)
+- [Build Troubleshooting](DEBUGGING.md#build-troubleshooting)
 
 ### Design System
 

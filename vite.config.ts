@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
 import { resolve } from 'path'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
 // ╔══════════════════════════════════════════════════════════════════════════╗
 // ║  PATH CONFIGURATION FOR ESM MODULE COMPATIBILITY                         ║
@@ -39,7 +38,7 @@ export default defineConfig({
   // └────────────────────────────────────────────────────────────────────────┘
   plugins: [
     preact(),
-    cssInjectedByJsPlugin(),
+    // CSS is handled by Twind at runtime - no need for CSS injection plugin
   ],
 
   // ┌────────────────────────────────────────────────────────────────────────┐
@@ -87,9 +86,8 @@ export default defineConfig({
   // └────────────────────────────────────────────────────────────────────────┘
   build: {
     // Output directory and file structure
-    // HACS requires the file in repository root when content_in_root: true
-    outDir: '.',
-    emptyOutDir: false, // Don't delete source files
+    outDir: 'dist',
+    emptyOutDir: true,
 
     // ╭──────────────────────────────────────────────────────────────────────╮
     // │ CRITICAL ROLLUP OPTIONS: Force single-file bundle                    │
@@ -97,6 +95,11 @@ export default defineConfig({
     rollupOptions: {
       input: createAbsolutePath('src', 'main.ts'),
       output: {
+        // CRITICAL: Use ES module format for Home Assistant compatibility
+        // IIFE format wraps code in anonymous function, preventing global access
+        // to custom element registration. ES format allows proper module exports
+        // that Home Assistant can load and execute correctly.
+        format: 'es',
         entryFileNames: 'shadcdn-template-card.js',
         // Prevent code splitting - everything in one file
         inlineDynamicImports: true,
@@ -127,7 +130,7 @@ export default defineConfig({
     },
 
     // Source map generation for debugging production builds
-    sourcemap: false, // Disabled to keep root clean
+    sourcemap: true,
 
     // Browser target compatibility
     target: 'es2015',
