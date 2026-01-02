@@ -6,7 +6,7 @@
  */
 
 import { ComponentChildren, createContext } from 'preact'
-import { useContext, useState, useCallback } from 'preact/hooks'
+import { useContext, useState, useCallback, useEffect } from 'preact/hooks'
 import { cn } from '../../lib/utils'
 
 interface AlertDialogContextValue {
@@ -97,7 +97,21 @@ export function AlertDialogContent({ children, className, ...props }: AlertDialo
     throw new Error('AlertDialogContent must be used within AlertDialog')
   }
 
-  const { open } = context
+  const { open, setOpen } = context
+
+  // Close on Escape key for UX consistency with other dialog components
+  useEffect(() => {
+    if (!open) return
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [open, setOpen])
 
   if (!open) return null
 
