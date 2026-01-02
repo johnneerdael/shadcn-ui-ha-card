@@ -2,7 +2,45 @@
  * AlertDialog Component
  *
  * Preact implementation of Shadcn alert-dialog component.
- * Modal dialog for important confirmations.
+ * Modal dialog for important confirmations (Shadow DOM compatible).
+ *
+ * **Shadow DOM Strategy:**
+ * Like Dialog, this component avoids React Portals and renders inline with fixed positioning.
+ * Designed specifically for Home Assistant's Shadow DOM environment.
+ *
+ * **Why No Radix UI:**
+ * - Radix AlertDialog uses portals which break in Shadow DOM
+ * - Custom implementation uses `position: fixed` within shadow root
+ * - No dependencies on document.body or external DOM
+ *
+ * **Event Handling:**
+ * - Escape key handler added in v2.1.1 for UX consistency
+ * - `document.addEventListener` is safe (events bubble from shadow root)
+ * - Proper cleanup prevents memory leaks
+ *
+ * **Use Case:**
+ * AlertDialog is for critical confirmations (delete, destructive actions).
+ * Unlike Dialog, it typically has Action/Cancel buttons and should be
+ * used when user confirmation is required before proceeding.
+ *
+ * @example
+ * ```tsx
+ * <AlertDialog open={open} onOpenChange={setOpen}>
+ *   <AlertDialogTrigger>Delete Item</AlertDialogTrigger>
+ *   <AlertDialogContent>
+ *     <AlertDialogHeader>
+ *       <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+ *       <AlertDialogDescription>
+ *         This action cannot be undone.
+ *       </AlertDialogDescription>
+ *     </AlertDialogHeader>
+ *     <AlertDialogFooter>
+ *       <AlertDialogCancel>Cancel</AlertDialogCancel>
+ *       <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+ *     </AlertDialogFooter>
+ *   </AlertDialogContent>
+ * </AlertDialog>
+ * ```
  */
 
 import { ComponentChildren, createContext } from 'preact'

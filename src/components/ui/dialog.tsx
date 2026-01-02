@@ -3,6 +3,48 @@
  *
  * Preact implementation of Shadcn dialog component (Shadow DOM compatible).
  * Modal dialog without portals - uses fixed positioning within shadow root.
+ *
+ * **Shadow DOM Strategy:**
+ * This component is specifically designed for Home Assistant's Shadow DOM environment.
+ * Unlike Radix UI's Dialog which uses React Portals, this implementation renders
+ * inline with fixed positioning relative to the shadow root's viewport.
+ *
+ * **Why No Radix UI:**
+ * - Radix Dialog uses `ReactDOM.createPortal()` to render outside the component tree
+ * - Portals break in Shadow DOM (cannot append to `document.body`)
+ * - Custom implementation uses `position: fixed` relative to shadow root
+ * - Z-index is scoped within shadow root (no conflicts with HA UI)
+ *
+ * **Event Handling:**
+ * - `document.addEventListener` is SAFE in Shadow DOM (events bubble up from shadow root)
+ * - Escape key handler works globally as expected
+ * - Click-outside handled via overlay click event
+ * - All listeners properly cleaned up in useEffect returns to prevent memory leaks
+ *
+ * **Architecture:**
+ * - DialogContent renders backdrop + content in the same DOM tree
+ * - Uses `fixed inset-0` for backdrop (covers shadow root viewport)
+ * - Content is centered using `fixed left-1/2 top-1/2 -translate-x/y-1/2`
+ * - Z-index `z-50` is safe within shadow root isolation
+ *
+ * @example
+ * ```tsx
+ * <Dialog open={open} onOpenChange={setOpen}>
+ *   <DialogTrigger>Open Dialog</DialogTrigger>
+ *   <DialogContent>
+ *     <DialogHeader>
+ *       <DialogTitle>Dialog Title</DialogTitle>
+ *       <DialogDescription>Dialog description text</DialogDescription>
+ *     </DialogHeader>
+ *     <div>Dialog content goes here</div>
+ *     <DialogFooter>
+ *       <button onClick={() => setOpen(false)}>Close</button>
+ *     </DialogFooter>
+ *   </DialogContent>
+ * </Dialog>
+ * ```
+ *
+ * @see https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card
  */
 
 import { ComponentChildren, createContext } from 'preact'
