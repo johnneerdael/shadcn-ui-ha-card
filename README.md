@@ -4,7 +4,7 @@
 [![GitHub Release](https://img.shields.io/github/release/johnneerdael/shadcn-ui-ha-card.svg)](https://github.com/jneerdael/shadcn-ui-ha-card/releases)
 [![License](https://img.shields.io/github/license/johnneerdael/status-banner-card.svg)](LICENSE)
 
-A professional **Visual Editor** for Home Assistant that brings the complete **shadcn/ui component library** (29 components, 75+ variants) with drag-and-drop layout, live preview, and per-card theming. Build beautiful, interactive dashboards without writing code!
+A professional **Visual Editor** for Home Assistant that brings the complete **shadcn/ui component library** (34 components, 85+ variants) with drag-and-drop layout, live preview, and per-card theming. Build beautiful, interactive dashboards without writing code!
 
 ## 🎨 Features
 
@@ -16,23 +16,23 @@ A professional **Visual Editor** for Home Assistant that brings the complete **s
 - **Grid Positioning** - Precise 12-column grid with drag-to-resize
 - **Theme Editor** - Customize colors, radius, and spacing per card
 
-### 29+ Shadcn Components
+### 34+ Shadcn Components (v2.1.0)
 **Complete core component coverage** from shadcn/ui:
 
 **Interactive Forms:**
-- Button, Switch, Slider, Checkbox, RadioGroup, Toggle, Select, Input, Textarea
+- Button, Switch, Slider, Checkbox, RadioGroup, Toggle, Select, Input, Textarea, Combobox
 
 **Display & Feedback:**
-- Alert, Badge, Progress, Skeleton, Separator, Avatar, Label
+- Alert, Badge, Progress, Skeleton, Separator, Avatar, Label, Toast
 
 **Layout Containers:**
-- Card, Tabs, Accordion, Collapsible, AspectRatio
+- Card, Tabs, Accordion, Collapsible, AspectRatio, ScrollArea
 
 **Advanced UI:**
 - Dialog, AlertDialog, Sheet, Popover, HoverCard, Tooltip
 
 **Data & Visualization:**
-- Chart, RawHTML (for custom content)
+- Chart, Table, Command, RawHTML (for custom content)
 
 ### Theme System
 - **Per-Card Themes** - Each card can have unique styling

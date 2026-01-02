@@ -54,6 +54,13 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from '../components/ui/alert-dialog'
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '../components/ui/sheet'
 
+// v2.1.0: Critical components for power users (NEW)
+import { ScrollArea } from '../components/ui/scroll-area'
+import { ToastProvider } from '../components/ui/toast'
+import { Combobox } from '../components/ui/combobox'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../components/ui/table'
+import { Command } from '../components/ui/command'
+
 /**
  * Type for any Preact component that can be rendered
  */
@@ -185,6 +192,18 @@ export const COMPONENT_MAP: Record<string, PreactComponent> = {
   'UiSheetTitle': SheetTitle,
   'UiSheetDescription': SheetDescription,
   'UiSheetFooter': SheetFooter,
+
+  // v2.1.0: Critical components for power users (IMPLEMENTED)
+  'UiScrollArea': ScrollArea,
+  'UiToastProvider': ToastProvider,
+  'UiCombobox': Combobox,
+  'UiTable': Table,
+  'UiTableHeader': TableHeader,
+  'UiTableBody': TableBody,
+  'UiTableRow': TableRow,
+  'UiTableHead': TableHead,
+  'UiTableCell': TableCell,
+  'UiCommand': Command,
 
   // Container primitives (for grid/flex layouts)
   // These are simple wrapper divs for layout purposes

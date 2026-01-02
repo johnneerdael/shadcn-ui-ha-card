@@ -866,6 +866,122 @@ export const UI_COMPONENTS: Record<string, ComponentDefinition> = {
     ],
     binding: undefined, // No automatic binding, user manages manually in HTML
   },
+
+  // ============================================================================
+  // v2.1.0: Critical Power User Components
+  // ============================================================================
+
+  UiScrollArea: {
+    name: 'UiScrollArea',
+    displayName: 'Scroll Area',
+    description: 'Scrollable container with custom scrollbar styling',
+    category: 'layout',
+    icon: 'mdi:arrow-vertical-lock',
+    styles: '',
+    props: [
+      {
+        name: 'orientation',
+        type: 'select',
+        options: ['vertical', 'horizontal', 'both'],
+        default: 'vertical',
+        description: 'Scroll direction',
+      },
+      { name: 'maxHeight', type: 'string', default: '300px', description: 'Maximum height for vertical scroll' },
+      { name: 'maxWidth', type: 'string', default: '100%', description: 'Maximum width for horizontal scroll' },
+    ],
+    binding: undefined, // Container component
+  },
+
+  UiToastProvider: {
+    name: 'UiToastProvider',
+    displayName: 'Toast Provider',
+    description: 'Provides toast notification system for action feedback',
+    category: 'feedback',
+    icon: 'mdi:message-alert-outline',
+    styles: '',
+    props: [
+      {
+        name: 'type',
+        type: 'select',
+        options: ['default', 'success', 'error', 'warning', 'info'],
+        default: 'default',
+        description: 'Toast visual style',
+      },
+      { name: 'title', type: 'string', default: '', description: 'Toast title' },
+      { name: 'description', type: 'string', default: '', description: 'Toast message content' },
+      { name: 'duration', type: 'number', default: 3000, description: 'Auto-dismiss duration in milliseconds' },
+      { name: 'actionLabel', type: 'string', default: '', description: 'Optional action button label' },
+    ],
+    binding: undefined, // Used for notifications, not entity-bound
+  },
+
+  UiCombobox: {
+    name: 'UiCombobox',
+    displayName: 'Combobox',
+    description: 'Searchable autocomplete select for large entity lists',
+    category: 'input',
+    icon: 'mdi:format-list-checkbox',
+    styles: '',
+    props: [
+      { name: 'placeholder', type: 'string', default: 'Select...', description: 'Placeholder text' },
+      { name: 'searchPlaceholder', type: 'string', default: 'Search...', description: 'Search input placeholder' },
+      { name: 'emptyMessage', type: 'string', default: 'No results found.', description: 'Empty state message' },
+      { name: 'disabled', type: 'boolean', default: false, description: 'Disable the combobox' },
+    ],
+    defaultAction: { type: 'call-service' },
+    binding: {
+      stateMapping: (state) => ({
+        value: state,
+      }),
+      supportedDomains: ['select', 'input_select'], // Best for select entities
+    },
+  },
+
+  UiTable: {
+    name: 'UiTable',
+    displayName: 'Data Table',
+    description: 'Sortable data table for device inventory and logs',
+    category: 'data',
+    icon: 'mdi:table',
+    styles: '',
+    props: [
+      { name: 'sortable', type: 'boolean', default: true, description: 'Enable column sorting' },
+      {
+        name: 'columns',
+        type: 'string',
+        default: '[]',
+        description: 'JSON array of column definitions: [{ key: "name", label: "Device Name", sortable: true }]',
+      },
+      {
+        name: 'data',
+        type: 'string',
+        default: '[]',
+        description: 'JSON array of row data: [{ id: "1", name: "Living Room Light", status: "On" }]',
+      },
+    ],
+    binding: undefined, // Data passed via props, not entity-bound
+  },
+
+  UiCommand: {
+    name: 'UiCommand',
+    displayName: 'Command Palette',
+    description: 'Cmd+K spotlight search for quick actions',
+    category: 'input',
+    icon: 'mdi:keyboard',
+    styles: '',
+    props: [
+      { name: 'placeholder', type: 'string', default: 'Type a command or search...', description: 'Search input placeholder' },
+      { name: 'emptyMessage', type: 'string', default: 'No results found.', description: 'Empty state message' },
+      {
+        name: 'groups',
+        type: 'string',
+        default: '[]',
+        description: 'JSON array of command groups: [{ heading: "Actions", items: [{ id: "1", label: "Turn off lights", onSelect: "..." }] }]',
+      },
+    ],
+    defaultAction: { type: 'call-service' },
+    binding: undefined, // Command palette is not entity-bound
+  },
 }
 
 // ============================================================================
