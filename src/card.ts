@@ -2,6 +2,9 @@ import { h, render } from 'preact'
 import { renderTemplate, type HassLike } from './lib/template'
 import { mapThemeVariables } from './lib/theme'
 import { componentRegistry } from './components/index'
+import { BindingEngine, ActionHandler, type HomeAssistant } from './lib/binding-engine'
+import { LayoutRenderer } from './renderer/layout-renderer'
+import type { LayoutItem, CardTheme } from './editor/types'
 
 // Support adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
@@ -13,12 +16,31 @@ declare const CARD_VERSION: string
 
 export type TemplateVars = Record<string, unknown>
 
-export interface shadcnTemplateCardConfig {
+/**
+ * Legacy template-based config (backward compatibility)
+ */
+export interface LegacyCardConfig {
   type: string
   title?: string
   content?: string
   variables?: TemplateVars
 }
+
+/**
+ * New visual editor config
+ */
+export interface EditorCardConfig {
+  type: string
+  title?: string
+  layout: LayoutItem[]
+  variables?: TemplateVars
+  theme?: CardTheme
+}
+
+/**
+ * Union type for both config formats
+ */
+export type shadcnTemplateCardConfig = LegacyCardConfig | EditorCardConfig
 
 export class shadcnTemplateCard extends HTMLElement {
   static get observedAttributes(): string[] {
@@ -36,9 +58,8 @@ export class shadcnTemplateCard extends HTMLElement {
 
   // Provide configuration element for visual editor
   static getConfigElement(): HTMLElement | null {
-    // TODO: Implement visual configuration editor
-    // For now, return null to indicate YAML-only configuration
-    return null
+    // Return the visual editor element
+    return document.createElement('shadcn-template-card-editor')
   }
 
   private _config?: shadcnTemplateCardConfig
@@ -49,6 +70,9 @@ export class shadcnTemplateCard extends HTMLElement {
   private _lastThemeVars?: Record<string, string>
   private _updatePending = false
   private _stylesInjected = false
+  private _themeSheet?: CSSStyleSheet
+  private _bindingEngine?: BindingEngine
+  private _actionHandler?: ActionHandler
 
   constructor() {
     super()
@@ -88,12 +112,23 @@ export class shadcnTemplateCard extends HTMLElement {
     // Home Assistant calls setConfig() before connectedCallback() and needs
     // content in the shadow root immediately to stop showing loading spinner
     this.injectStyles()
+    this.applyTheme()
     this.update()
   }
 
   set hass(hass: HassLike) {
     const previousHass = this._hass
     this._hass = hass
+
+    // Initialize binding engine and action handler if not already initialized
+    if (hass && !this._bindingEngine) {
+      this._bindingEngine = new BindingEngine(hass as HomeAssistant, this)
+      this._actionHandler = new ActionHandler(hass as HomeAssistant, this)
+    } else if (hass && this._bindingEngine) {
+      // Update hass reference in existing engines
+      this._bindingEngine.updateHass(hass as HomeAssistant)
+      this._actionHandler?.updateHass(hass as HomeAssistant)
+    }
 
     // Detect theme changes to avoid unnecessary re-renders
     const currentTheme = this.getSelectedTheme(hass)
@@ -112,13 +147,27 @@ export class shadcnTemplateCard extends HTMLElement {
 
   getCardSize(): number {
     // Calculate dynamic card size based on content
-    // Each line of content ≈ 0.5 units, minimum 2, maximum 10
-    if (!this._config?.content) return 2
+    if (!this._config) return 2
 
-    const lines = this._config.content.split('\n').length
-    const calculatedSize = Math.max(2, Math.min(10, Math.ceil(lines / 4) + 1))
+    // For visual editor config, calculate based on layout items
+    if ('layout' in this._config && Array.isArray(this._config.layout)) {
+      // Find the maximum y + h value to determine card height
+      const maxHeight = this._config.layout.reduce((max, item) => {
+        const itemHeight = (item.y || 0) + (item.h || 1)
+        return Math.max(max, itemHeight)
+      }, 0)
 
-    return calculatedSize
+      // Each grid row is roughly 1 card unit
+      return Math.max(2, Math.min(10, maxHeight))
+    }
+
+    // For legacy template config, calculate based on content lines
+    if ('content' in this._config && this._config.content) {
+      const lines = this._config.content.split('\n').length
+      return Math.max(2, Math.min(10, Math.ceil(lines / 4) + 1))
+    }
+
+    return 2
   }
 
   /**
@@ -163,6 +212,52 @@ export class shadcnTemplateCard extends HTMLElement {
     this._stylesInjected = true
   }
 
+  /**
+   * Apply custom theme CSS variables to shadow root
+   * This follows shadcn philosophy: "adjusting the DNA of components"
+   */
+  private applyTheme(): void {
+    // Only apply theme for editor configs
+    if (!this._config || !('theme' in this._config) || !this._config.theme) {
+      return
+    }
+
+    const theme = this._config.theme
+    const cssVars = this.buildCSSVariables(theme)
+
+    // Create or update theme stylesheet
+    if (!this._themeSheet) {
+      this._themeSheet = new CSSStyleSheet()
+      // Prepend theme sheet to existing stylesheets
+      this._root.adoptedStyleSheets = [this._themeSheet, ...this._root.adoptedStyleSheets]
+    }
+
+    // Apply CSS variables to :host
+    this._themeSheet.replaceSync(`:host { ${cssVars} }`)
+  }
+
+  /**
+   * Build CSS variable declarations from theme config
+   */
+  private buildCSSVariables(theme: CardTheme): string {
+    const vars: string[] = []
+
+    // Color overrides
+    if (theme.primary) vars.push(`--primary: ${theme.primary}`)
+    if (theme.secondary) vars.push(`--secondary: ${theme.secondary}`)
+    if (theme.background) vars.push(`--background: ${theme.background}`)
+    if (theme.foreground) vars.push(`--foreground: ${theme.foreground}`)
+
+    // Border radius override
+    if (theme.radius) vars.push(`--radius: ${theme.radius}`)
+
+    // Spacing defaults (components can still override)
+    if (theme.spacing?.gap) vars.push(`--default-gap: ${theme.spacing.gap}`)
+    if (theme.spacing?.padding) vars.push(`--default-padding: ${theme.spacing.padding}`)
+
+    return vars.join('; ')
+  }
+
   private scheduleUpdate(): void {
     // Debounce updates to prevent excessive re-renders
     if (this._updatePending) return
@@ -182,9 +277,6 @@ export class shadcnTemplateCard extends HTMLElement {
 
     try {
       const title = this._config.title ?? 'shadcn-template-card'
-      const raw = this._config.content ?? 'Template content goes here.'
-      const variables = this._config.variables ?? {}
-      const renderedContent = renderTemplate(raw, this._hass, variables)
       const themeVars = this.getThemeVariables()
 
       const styleVars = Object.entries(themeVars).reduce<Record<string, string>>((acc, [key, value]) => {
@@ -192,29 +284,70 @@ export class shadcnTemplateCard extends HTMLElement {
         return acc
       }, {})
 
-      // Use 'shadcn-root' class for PostCSS scoping
-      const node = h(
-        'div',
-        {
-          class: 'shadcn-root flex flex-col gap-2 p-4 rounded-lg bg-card text-foreground shadow border border-border',
-          style: styleVars,
-        },
-        h('div', { class: 'text-xs uppercase tracking-[0.14em] text-muted-foreground' }, title),
-        h(
-          'pre',
-          {
-            class: 'text-xs font-mono whitespace-pre-wrap bg-muted text-foreground p-3 rounded border border-border',
-          },
-          renderedContent
-        ),
-        h(
-          'div',
-          { class: 'text-[10px] uppercase tracking-[0.08em] text-muted-foreground' },
-          `Version: ${typeof CARD_VERSION === 'string' ? CARD_VERSION : 'dev'}`
-        )
-      )
+      // Check if this is a new editor config (has layout array)
+      if ('layout' in this._config && Array.isArray(this._config.layout)) {
+        // NEW VISUAL EDITOR FORMAT - Use LayoutRenderer
+        if (!this._hass || !this._bindingEngine || !this._actionHandler) {
+          // If hass not set yet, show loading state
+          const node = h(
+            'div',
+            {
+              class: 'shadcn-root flex flex-col gap-2 p-4 rounded-lg bg-card text-foreground shadow border border-border',
+              style: styleVars,
+            },
+            h('div', { class: 'text-xs uppercase tracking-[0.14em] text-muted-foreground' }, title),
+            h('div', { class: 'text-sm text-muted-foreground' }, 'Waiting for Home Assistant connection...')
+          )
+          render(node, this._root)
+          return
+        }
 
-      render(node, this._root)
+        const node = h(
+          'div',
+          {
+            class: 'shadcn-root',
+            style: styleVars,
+          },
+          title && h('div', { class: 'text-xs uppercase tracking-[0.14em] text-muted-foreground p-4 pb-0' }, title),
+          h(LayoutRenderer, {
+            layout: this._config.layout,
+            hass: this._hass as HomeAssistant,
+            bindingEngine: this._bindingEngine,
+            actionHandler: this._actionHandler,
+          })
+        )
+
+        render(node, this._root)
+      } else {
+        // LEGACY TEMPLATE FORMAT - Use old rendering
+        const raw = ('content' in this._config ? this._config.content : undefined) ?? 'Template content goes here.'
+        const variables = this._config.variables ?? {}
+        const renderedContent = renderTemplate(raw, this._hass, variables)
+
+        // Use 'shadcn-root' class for PostCSS scoping
+        const node = h(
+          'div',
+          {
+            class: 'shadcn-root flex flex-col gap-2 p-4 rounded-lg bg-card text-foreground shadow border border-border',
+            style: styleVars,
+          },
+          h('div', { class: 'text-xs uppercase tracking-[0.14em] text-muted-foreground' }, title),
+          h(
+            'pre',
+            {
+              class: 'text-xs font-mono whitespace-pre-wrap bg-muted text-foreground p-3 rounded border border-border',
+            },
+            renderedContent
+          ),
+          h(
+            'div',
+            { class: 'text-[10px] uppercase tracking-[0.08em] text-muted-foreground' },
+            `Version: ${typeof CARD_VERSION === 'string' ? CARD_VERSION : 'dev'}`
+          )
+        )
+
+        render(node, this._root)
+      }
     } catch (error) {
       console.error('shadcn-template-card: Failed to render card:', error)
       // Render error state in shadow root

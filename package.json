@@ -1,9 +1,9 @@
 {
   "name": "shadcn-template-card",
-  "version": "1.1.3",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Home Assistant custom card with 24+ shadcn/ui components, interactive controls, and Jinja2 templating. Features accordions, sliders, switches, checkboxes, and more with full accessibility support.",
+  "description": "Home Assistant custom card with 29 shadcn/ui components (75+ variants), visual drag-and-drop editor, per-card theming system, and full entity binding. Build beautiful dashboards without code!",
   "author": "Your Name",
   "license": "MIT",
   "keywords": [
@@ -42,6 +42,7 @@
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@types/react-grid-layout": "^1.3.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "construct-style-sheets-polyfill": "^3.1.0",
@@ -49,6 +50,8 @@
     "html-react-parser": "^5.1.1",
     "lucide-preact": "^0.303.0",
     "preact": "^10.19.3",
+    "react-grid-layout": "^2.2.2",
+    "recharts": "^3.6.0",
     "tailwind-merge": "^2.2.0"
   },
   "overrides": {

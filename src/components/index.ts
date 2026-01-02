@@ -27,6 +27,39 @@ import { checkboxComponent, checkbox } from './checkbox'
 import { selectComponent, select } from './select'
 import { sliderComponent, slider } from './slider'
 
+// Import Phase 2 components (CSS-only overlays & navigation)
+import { badgeComponent, badge } from './badge'
+import { inputComponent, input } from './input'
+import { tabsComponent, tabs, tabsList, initTabs } from './tabs'
+import { tooltipComponent } from './tooltip'
+import { popoverComponent } from './popover'
+import { hoverCardComponent } from './hover-card'
+import { dialogComponent } from './dialog'
+import { sheetComponent } from './sheet'
+import { alertDialogComponent } from './alert-dialog'
+
+// Import Phase 1 components (New CSS-only utilities)
+import { spinnerComponent, spinner } from './spinner'
+import { breadcrumbComponent, breadcrumb, breadcrumbList, breadcrumbItem, breadcrumbLink, breadcrumbPage, breadcrumbSeparator } from './breadcrumb'
+import { paginationComponent, pagination, paginationContent, paginationItem, paginationEllipsis } from './pagination'
+import { scrollAreaComponent, scrollArea, scrollAreaViewport } from './scroll-area'
+import { toggleGroupComponent, toggleGroup, toggleGroupItem } from './toggle-group'
+
+// Import Phase 2 components (Interactive navigation)
+import { dropdownMenuComponent, dropdownMenu, dropdownMenuContent, dropdownMenuItem, dropdownMenuSeparator, dropdownMenuLabel, initDropdownMenu } from './dropdown-menu'
+import { contextMenuComponent, contextMenu, contextMenuTrigger, contextMenuContent, contextMenuItem, contextMenuSeparator, contextMenuLabel, contextMenuShortcut, initContextMenu } from './context-menu'
+import { drawerComponent, drawer, drawerContent, drawerHandle, drawerHeader, drawerTitle, drawerDescription, drawerBody, drawerFooter, initDrawer } from './drawer'
+
+// Import Phase 3 components (Advanced inputs)
+import { inputOTPComponent, inputOTP, inputOTPSlot, inputOTPSeparator, initInputOTP, getOTPValue, clearOTP } from './input-otp'
+import { comboboxComponent, initCombobox } from './combobox'
+import { formComponent, form, formField, formLabel, formDescription, formMessage, formActions, initForm } from './form'
+
+// Import Phase 4 components (Data display)
+import { tableComponent, initTable } from './table'
+import { calendarComponent } from './calendar'
+import { carouselComponent, initCarousel } from './carousel'
+
 // Register all components
 componentRegistry.registerAll([
   // Tier 1: CSS-only components
@@ -47,6 +80,34 @@ componentRegistry.registerAll([
   checkboxComponent,
   selectComponent,
   sliderComponent,
+  // Phase 2: CSS-only overlays & navigation
+  badgeComponent,
+  inputComponent,
+  tabsComponent,
+  tooltipComponent,
+  popoverComponent,
+  hoverCardComponent,
+  dialogComponent,
+  sheetComponent,
+  alertDialogComponent,
+  // Phase 1: New CSS-only utilities
+  spinnerComponent,
+  breadcrumbComponent,
+  paginationComponent,
+  scrollAreaComponent,
+  toggleGroupComponent,
+  // Phase 2: Interactive navigation
+  dropdownMenuComponent,
+  contextMenuComponent,
+  drawerComponent,
+  // Phase 3: Advanced inputs
+  inputOTPComponent,
+  comboboxComponent,
+  formComponent,
+  // Phase 4: Data display
+  tableComponent,
+  calendarComponent,
+  carouselComponent,
 ])
 
 // Export component helper functions
@@ -71,6 +132,70 @@ export {
   checkbox,
   select,
   slider,
+  // Phase 2
+  badge,
+  input,
+  tabs,
+  tabsList,
+  initTabs,
+  // Phase 1
+  spinner,
+  breadcrumb,
+  breadcrumbList,
+  breadcrumbItem,
+  breadcrumbLink,
+  breadcrumbPage,
+  breadcrumbSeparator,
+  pagination,
+  paginationContent,
+  paginationItem,
+  paginationEllipsis,
+  scrollArea,
+  scrollAreaViewport,
+  toggleGroup,
+  toggleGroupItem,
+  // Phase 2
+  dropdownMenu,
+  dropdownMenuContent,
+  dropdownMenuItem,
+  dropdownMenuSeparator,
+  dropdownMenuLabel,
+  initDropdownMenu,
+  contextMenu,
+  contextMenuTrigger,
+  contextMenuContent,
+  contextMenuItem,
+  contextMenuSeparator,
+  contextMenuLabel,
+  contextMenuShortcut,
+  initContextMenu,
+  drawer,
+  drawerContent,
+  drawerHandle,
+  drawerHeader,
+  drawerTitle,
+  drawerDescription,
+  drawerBody,
+  drawerFooter,
+  initDrawer,
+  // Phase 3
+  inputOTP,
+  inputOTPSlot,
+  inputOTPSeparator,
+  initInputOTP,
+  getOTPValue,
+  clearOTP,
+  initCombobox,
+  form,
+  formField,
+  formLabel,
+  formDescription,
+  formMessage,
+  formActions,
+  initForm,
+  // Phase 4
+  initTable,
+  initCarousel,
 }
 
 // Export component registry
