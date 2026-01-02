@@ -28,27 +28,57 @@ export interface CommandProps {
 /**
  * Command Component
  *
- * Command palette / spotlight search (Cmd+K).
- * Shadow DOM compatible - uses fixed positioning.
+ * Command palette / spotlight search (Cmd+K) for Home Assistant (Shadow DOM compatible).
+ * Called a "massive usability booster" for complex smart homes.
+ *
+ * **Shadow DOM Strategy:**
+ * Fixed center positioning with full-screen backdrop, similar to Dialog.
+ * No portals - renders inline with z-index stacking.
+ *
+ * **Why No Radix UI:**
+ * - Radix doesn't have a Command component
+ * - Custom implementation inspired by cmdk library
+ * - Fixed positioning works perfectly in shadow root
+ *
+ * **Features:**
+ * - Grouped commands with headings
+ * - Fuzzy search across labels, descriptions, and keywords
+ * - Keyboard-first interaction:
+ *   - Arrow Up/Down: Navigate items
+ *   - Enter: Select item
+ *   - Escape: Close palette
+ * - Auto-focus search input
+ * - Click-outside to close
+ *
+ * **Use Case:**
+ * Perfect for power users with complex HA setups:
+ * - Quick actions: "Turn off kitchen lights"
+ * - Navigation: "Goto automation settings"
+ * - Device control: Search by name/room/type
+ * - Scene activation: Search scenes by keyword
  *
  * @example
+ * ```tsx
  * <Command
  *   open={open}
  *   onOpenChange={setOpen}
  *   placeholder="Type a command or search..."
  *   groups={[
  *     {
- *       heading: 'Actions',
+ *       heading: 'Quick Actions',
  *       items: [
  *         {
  *           id: 'lights-off',
  *           label: 'Turn off all lights',
+ *           description: 'Turn off every light in the house',
+ *           keywords: ['lights', 'off', 'all'],
  *           onSelect: () => turnOffLights()
  *         }
  *       ]
  *     }
  *   ]}
  * />
+ * ```
  */
 export function Command({
   open = false,

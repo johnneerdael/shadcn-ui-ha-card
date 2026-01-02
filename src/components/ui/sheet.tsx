@@ -3,6 +3,42 @@
  *
  * Preact implementation of Shadcn sheet component (Shadow DOM compatible).
  * Side drawer/panel that slides in from the edge.
+ *
+ * **Shadow DOM Strategy:**
+ * CSS-only sliding panel without portals. Uses fixed positioning with transform animations.
+ * Similar to Dialog but slides from screen edges instead of centering.
+ *
+ * **Why No Radix UI:**
+ * - Radix Sheet would use portals for overlay
+ * - Custom implementation uses `position: fixed` with CSS transforms
+ * - Slide animations via Tailwind `translate-x/y` utilities
+ *
+ * **Positioning:**
+ * - Supports 4 sides: right (default), left, top, bottom
+ * - Size variants: default, sm, lg, full
+ * - Backdrop overlay with `fixed inset-0`
+ *
+ * **Animations:**
+ * - Slide-in from edge using CSS transforms
+ * - Backdrop fade-in
+ * - All animations scoped within shadow root
+ *
+ * @example
+ * ```tsx
+ * <Sheet open={open} onOpenChange={setOpen}>
+ *   <SheetTrigger>Open Sheet</SheetTrigger>
+ *   <SheetContent side="right" size="default">
+ *     <SheetHeader>
+ *       <SheetTitle>Sheet Title</SheetTitle>
+ *       <SheetDescription>Description text</SheetDescription>
+ *     </SheetHeader>
+ *     <div>Sheet content</div>
+ *     <SheetFooter>
+ *       <button onClick={() => setOpen(false)}>Close</button>
+ *     </SheetFooter>
+ *   </SheetContent>
+ * </Sheet>
+ * ```
  */
 
 import { ComponentChildren, createContext } from 'preact'

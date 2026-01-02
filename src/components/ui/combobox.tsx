@@ -21,18 +21,43 @@ export interface ComboboxProps {
 /**
  * Combobox Component
  *
- * Autocomplete/searchable select component for large lists.
- * Shadow DOM compatible - uses absolute positioning.
+ * Autocomplete/searchable select component for large lists (Shadow DOM compatible).
+ * Essential for Home Assistant entity selection when dealing with 100+ entities.
+ *
+ * **Shadow DOM Strategy:**
+ * Dropdown list uses absolute positioning relative to trigger button.
+ * No portals - dropdown renders inline with proper z-index stacking.
+ *
+ * **Why No Radix UI:**
+ * - Radix Select uses portals for dropdown positioning
+ * - Custom implementation uses `position: absolute` below trigger
+ * - Search functionality built-in (Radix Select doesn't include this)
+ *
+ * **Features:**
+ * - Live search filtering across option labels
+ * - Keyboard navigation (Arrow keys to navigate, Enter to select)
+ * - Click-outside and Escape key to close
+ * - Empty state with customizable message
+ *
+ * **Use Case:**
+ * Perfect for HA entity pickers where users have many devices:
+ * - Scene composer (100+ entities)
+ * - Music search (large library)
+ * - Device picker (all lights, switches, etc.)
  *
  * @example
+ * ```tsx
  * <Combobox
  *   options={[
  *     { value: 'light1', label: 'Living Room Light' },
  *     { value: 'light2', label: 'Bedroom Light' }
  *   ]}
+ *   value={selectedValue}
+ *   onValueChange={setSelectedValue}
  *   placeholder="Select a device..."
- *   onValueChange={(value) => console.log(value)}
+ *   searchPlaceholder="Search devices..."
  * />
+ * ```
  */
 export function Combobox({
   options,

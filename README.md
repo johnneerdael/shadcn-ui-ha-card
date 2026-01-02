@@ -49,6 +49,37 @@ A professional **Visual Editor** for Home Assistant that brings the complete **s
 - **TypeScript** - Fully typed for safety and IDE support
 - **Accessibility** - ARIA support, keyboard navigation, screen readers
 
+### Shadow DOM Compatibility
+
+**100% Shadow DOM compliant** - All 34 components are production-ready for Home Assistant's isolated environment:
+
+**✅ Custom Implementations (No Radix UI Portals)**
+- Dialog, AlertDialog, Sheet, Popover, Tooltip, HoverCard, Combobox, Command
+- All overlay components use **fixed/absolute positioning** within shadow root
+- No React Portals (which break by rendering to `document.body`)
+
+**✅ Positioning Strategies**
+- **Fixed Overlays:** Dialog, AlertDialog, Sheet, Command use `position: fixed` relative to shadow root viewport
+- **Absolute Dropdowns:** Popover, Combobox, Tooltip use `position: absolute` relative to trigger elements
+- **Z-index Scoping:** All `z-50` values are scoped within shadow root (no conflicts with HA UI)
+
+**✅ Event Handling**
+- Escape key and click-outside detection use `document.addEventListener` (safe - events bubble from shadow root)
+- All listeners properly cleaned up in component unmount
+- Keyboard navigation works globally as expected
+
+**✅ CSS Isolation**
+- All classes prefixed with `shc-` to prevent style leakage
+- Theme system uses CSS Variables (`var(--primary)`, `var(--background)`)
+- Tailwind utilities scoped via PostCSS prefix
+
+**Architecture Decision:** We explicitly avoided Radix UI primitives because:
+1. Portals break in Shadow DOM (cannot append to `document.body`)
+2. Floating UI positioning doesn't work across shadow boundaries
+3. Custom implementations give us full control over Shadow DOM behavior
+
+See `src/renderer/component-map.tsx` for detailed documentation of our Shadow DOM strategy.
+
 ## 📦 Installation
 
 ### HACS (Recommended)

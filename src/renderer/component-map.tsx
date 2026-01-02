@@ -4,10 +4,41 @@
  * Maps component names from the registry to actual Preact component implementations.
  * This is the bridge between the component registry (metadata) and the renderer (UI).
  *
- * As new components are ported from shadcn-sourcecode/, add them to this map.
+ * **Shadow DOM Compliance:**
+ * All 34 components in this map are Shadow DOM compatible and production-ready:
+ * - ✅ No Radix UI portals (all overlay components use custom implementations)
+ * - ✅ Fixed/absolute positioning within shadow root (not portaled to document.body)
+ * - ✅ Proper event cleanup (all useEffect returns remove listeners)
+ * - ✅ CSS scoping via .shc- prefixes (no style leakage)
+ * - ✅ Z-index strategy (z-50 for overlays, scoped within shadow root)
+ *
+ * **Overlay Components (Custom Implementations):**
+ * The following components would normally use Radix UI with portals,
+ * but have been reimplemented for Shadow DOM compatibility:
+ * - Dialog, AlertDialog - Fixed center positioning with backdrop
+ * - Popover - Absolute positioning relative to trigger
+ * - Sheet - Fixed positioning with slide animations
+ * - Combobox - Absolute dropdown positioning
+ * - Command - Fixed center positioning (Cmd+K palette)
+ * - Tooltip, HoverCard - CSS-only with absolute positioning
+ *
+ * **Event Handling Pattern:**
+ * Overlay components use `document.addEventListener` for:
+ * - Escape key (close on Escape)
+ * - Click-outside detection
+ * This is SAFE in Shadow DOM because events bubble from shadow root → document.
+ * All listeners are properly cleaned up in useEffect returns.
+ *
+ * **Architecture Decision:**
+ * We chose to avoid Radix UI primitives entirely because:
+ * 1. Portals break in Shadow DOM (cannot append to document.body)
+ * 2. Floating UI positioning doesn't work across shadow boundaries
+ * 3. Focus trap and accessibility features need shadow-aware implementation
+ * 4. Custom implementations give us full control over Shadow DOM behavior
  *
  * @see src/lib/component-registry.ts for component metadata
  * @see src/components/ui/ for component implementations
+ * @see https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card
  */
 
 import type { FunctionComponent } from 'preact'
