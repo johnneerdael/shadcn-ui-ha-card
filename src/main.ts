@@ -2,8 +2,18 @@ import './globals.css'
 import { shadcnTemplateCard } from './card'
 import type { shadcnTemplateCardConfig } from './card'
 import { ShadcnCardEditorElement } from './editor'
+import {
+  CARD_TYPE,
+  CARD_NAME,
+  CARD_DESCRIPTION,
+  DOCUMENTATION_URL,
+  CONSOLE_BANNER,
+  CONSOLE_BANNER_STYLE_1,
+  CONSOLE_BANNER_STYLE_2,
+} from './constants'
 
-declare const CARD_VERSION: string
+// Console banner for card initialization
+console.info(CONSOLE_BANNER, CONSOLE_BANNER_STYLE_1, CONSOLE_BANNER_STYLE_2)
 
 // Registration must happen synchronously at module load
 customElements.define('shadcn-template-card', shadcnTemplateCard)
@@ -25,11 +35,11 @@ declare global {
 
 window.customCards = window.customCards || []
 window.customCards.push({
-  type: 'custom:shadcn-template-card',
-  name: 'Shadcn Template Card',
-  description: 'A flexible template card with Shadcn UI components and Tailwind styling',
+  type: CARD_TYPE,
+  name: CARD_NAME,
+  description: CARD_DESCRIPTION,
   preview: false,
-  documentationURL: 'https://github.com/johnneerdael/shadcn-template-card', // Update with actual URL
+  documentationURL: DOCUMENTATION_URL,
 })
 
 // Export types for TypeScript consumers

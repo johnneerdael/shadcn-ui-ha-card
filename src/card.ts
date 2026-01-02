@@ -5,6 +5,7 @@ import { componentRegistry } from './components/index'
 import { BindingEngine, ActionHandler, type HomeAssistant } from './lib/binding-engine'
 import { LayoutRenderer } from './renderer/layout-renderer'
 import type { LayoutItem, CardTheme } from './editor/types'
+import { DEFAULT_CONFIG } from './constants'
 
 // Support adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
@@ -49,11 +50,7 @@ export class shadcnTemplateCard extends HTMLElement {
 
   // Provide default configuration for card picker
   static getStubConfig(): shadcnTemplateCardConfig {
-    return {
-      type: 'custom:shadcn-template-card',
-      title: 'New Card',
-      content: 'Template content goes here.',
-    }
+    return DEFAULT_CONFIG as shadcnTemplateCardConfig
   }
 
   // Provide configuration element for visual editor
