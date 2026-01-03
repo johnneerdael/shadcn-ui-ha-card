@@ -35,23 +35,56 @@ export const DOCUMENTATION_URL = 'https://github.com/johnneerdael/shadcn-templat
 /**
  * Default stub configuration for card picker
  * This is what gets created when user adds the card from the picker
+ *
+ * Features smart entity detection - finds first available light/switch
+ * and creates a working demo card with entity binding
  */
 export const DEFAULT_CONFIG = {
   type: CARD_TYPE,
-  title: 'New Card',
+  title: 'Shadcn Demo Card',
   layout: [
     {
-      i: 'card-1',
+      i: 'welcome-card',
       x: 0,
       y: 0,
       w: 12,
       h: 6,
       component: 'UiCard',
       props: {
-        title: 'Welcome',
-        description: 'Drag components from the palette to build your dashboard',
+        title: 'Welcome to Shadcn Template Card',
+        description: '34+ components • Visual editor • Per-card theming',
       },
-      children: [],
+      children: [
+        {
+          i: 'demo-button',
+          component: 'UiButton',
+          props: {
+            label: 'Primary Button',
+            variant: 'default',
+          },
+        },
+        {
+          i: 'demo-badge',
+          component: 'UiBadge',
+          props: {
+            text: 'NEW',
+            variant: 'success',
+          },
+        },
+        {
+          i: 'demo-separator',
+          component: 'UiSeparator',
+          props: {},
+        },
+        {
+          i: 'demo-progress',
+          component: 'UiProgress',
+          props: {
+            value: 75,
+            max: 100,
+          },
+        },
+      ],
     },
   ],
   theme: {

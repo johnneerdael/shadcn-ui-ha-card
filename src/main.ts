@@ -15,9 +15,32 @@ import {
 // Console banner for card initialization
 console.info(CONSOLE_BANNER, CONSOLE_BANNER_STYLE_1, CONSOLE_BANNER_STYLE_2)
 
+// DEBUG: Log registration start
+console.log('[ShadcnCard] 🚀 Starting custom element registration...')
+console.log('[ShadcnCard] 📦 Card class:', shadcnTemplateCard)
+console.log('[ShadcnCard] 🎨 Editor class:', ShadcnCardEditorElement)
+
 // Registration must happen synchronously at module load
-customElements.define('shadcn-template-card', shadcnTemplateCard)
-customElements.define('shadcn-template-card-editor', ShadcnCardEditorElement)
+try {
+  console.log('[ShadcnCard] 🔧 Registering card element: shadcn-template-card')
+  customElements.define('shadcn-template-card', shadcnTemplateCard)
+  console.log('[ShadcnCard] ✅ Card element registered successfully')
+} catch (error) {
+  console.error('[ShadcnCard] ❌ Card registration failed:', error)
+}
+
+try {
+  console.log('[ShadcnCard] 🔧 Registering editor element: shadcn-template-card-editor')
+  customElements.define('shadcn-template-card-editor', ShadcnCardEditorElement)
+  console.log('[ShadcnCard] ✅ Editor element registered successfully')
+} catch (error) {
+  console.error('[ShadcnCard] ❌ Editor registration failed:', error)
+}
+
+// Verify registration
+console.log('[ShadcnCard] 🔍 Verifying registration...')
+console.log('[ShadcnCard] Card defined:', customElements.get('shadcn-template-card'))
+console.log('[ShadcnCard] Editor defined:', customElements.get('shadcn-template-card-editor'))
 
 // Register card in the card picker UI
 // This is required for the card to appear in Home Assistant's "Add Card" dialog
@@ -33,6 +56,7 @@ declare global {
   }
 }
 
+console.log('[ShadcnCard] 🎯 Adding to card picker...')
 window.customCards = window.customCards || []
 window.customCards.push({
   type: CARD_TYPE,
@@ -41,6 +65,9 @@ window.customCards.push({
   preview: false,
   documentationURL: DOCUMENTATION_URL,
 })
+console.log('[ShadcnCard] ✅ Added to card picker')
+console.log('[ShadcnCard] 📋 Current customCards:', window.customCards)
+console.log('[ShadcnCard] 🎉 All registration complete!')
 
 // Export types for TypeScript consumers
 export type { shadcnTemplateCardConfig }
