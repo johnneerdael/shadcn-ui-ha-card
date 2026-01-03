@@ -1,16 +1,20 @@
 /**
  * Card Editor
  *
- * Main visual editor component that combines the palette, canvas, and properties panel.
- * Also provides the HTMLElement wrapper for Home Assistant integration.
+ * Main visual editor with vertical layout:
+ * 1. Card Theme Settings (top)
+ * 2. Horizontal Component Picker (full-width, 1 row per category)
+ * 3. Component Styling Panel (appears when component selected)
+ * 4. Full-width Canvas with live preview (bottom)
  */
 
 import { h, render } from 'preact'
 import { useState, useCallback, useMemo } from 'preact/hooks'
-import { ComponentPalette } from './component-palette'
-import { SplitCanvas } from './split-canvas'
-import { PropertiesPanel } from './properties-panel'
-import type { CardEditorProps, EditorConfig, LayoutItem } from './types'
+import { CardSettings } from './card-settings'
+import { HorizontalPicker } from './horizontal-picker'
+import { ComponentStyling } from './component-styling'
+import { FullWidthCanvas } from './full-width-canvas'
+import type { CardEditorProps, EditorConfig, LayoutItem, CardTheme } from './types'
 import { createLayoutItem } from './types'
 
 // Import CSS for adoptedStyleSheets
@@ -100,7 +104,18 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
     [layout, selectedId]
   )
 
-  // Handle adding a new component from palette
+  // Handle theme changes
+  const handleThemeChange = useCallback(
+    (theme: CardTheme) => {
+      onChange({
+        ...config,
+        theme,
+      })
+    },
+    [config, onChange]
+  )
+
+  // Handle adding a new component from picker
   const handleAddComponent = useCallback(
     (componentType: string) => {
       // Find the lowest y position to add below existing items
@@ -114,7 +129,7 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
         layout: newLayout,
       })
 
-      // Select the new item
+      // Select the new item to show its styling options
       setSelectedId(newItem.i)
     },
     [config, layout, onChange]
@@ -153,7 +168,7 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
     [config, layout, onChange, selectedId]
   )
 
-  // Handle property changes from properties panel
+  // Handle property changes from styling panel
   const handlePropertyChange = useCallback(
     (itemId: string, updates: Partial<LayoutItem>) => {
       const newLayout = layout.map((item) =>
@@ -180,35 +195,38 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
         </div>
       </div>
 
-      {/* Main editor area */}
-      <div class="flex-1 flex overflow-hidden">
-        {/* Left: Component Palette */}
-        <div class="w-44 flex-shrink-0 border-r border-border">
-          <ComponentPalette onAddComponent={handleAddComponent} />
-        </div>
+      {/* 1. Card Theme Settings */}
+      <CardSettings
+        theme={config.theme}
+        onChange={handleThemeChange}
+      />
 
-        {/* Center: Split Canvas (Preview + Grid) */}
-        <SplitCanvas
-          layout={layout}
-          selectedId={selectedId}
-          hass={hass}
-          onLayoutChange={handleLayoutChange}
-          onSelect={handleSelect}
-          onDelete={handleDelete}
-        />
+      {/* 2. Horizontal Component Picker */}
+      <HorizontalPicker
+        onAddComponent={handleAddComponent}
+      />
 
-        {/* Right: Properties Panel */}
-        <PropertiesPanel
+      {/* 3. Component Styling Panel (when component selected) */}
+      {selectedItem && (
+        <ComponentStyling
           hass={hass}
-          config={config}
           selectedItem={selectedItem}
-          layout={layout}
+          globalTheme={config.theme}
           onPropertyChange={handlePropertyChange}
-          onConfigChange={onChange}
-          onSelect={handleSelect}
+          onDeselect={() => setSelectedId(null)}
           onDelete={handleDelete}
         />
-      </div>
+      )}
+
+      {/* 4. Full-width Canvas */}
+      <FullWidthCanvas
+        layout={layout}
+        selectedId={selectedId}
+        hass={hass}
+        onLayoutChange={handleLayoutChange}
+        onSelect={handleSelect}
+        onDelete={handleDelete}
+      />
     </div>
   )
 }

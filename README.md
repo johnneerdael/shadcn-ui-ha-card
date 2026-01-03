@@ -1,25 +1,49 @@
 # Shadcn Template Card
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/release/johnneerdael/shadcn-ui-ha-card.svg)](https://github.com/jneerdael/shadcn-ui-ha-card/releases)
-[![License](https://img.shields.io/github/license/johnneerdael/status-banner-card.svg)](LICENSE)
+[![GitHub Release](https://img.shields.io/github/release/johnneerdael/shadcn-ui-ha-card.svg)](https://github.com/johnneerdael/shadcn-ui-ha-card/releases)
+[![License](https://img.shields.io/github/license/johnneerdael/shadcn-ui-ha-card.svg)](LICENSE)
 
 A professional **Visual Editor** for Home Assistant that brings the complete **shadcn/ui component library** (34 components, 85+ variants) with drag-and-drop layout, live preview, and per-card theming. Build beautiful, interactive dashboards without writing code!
 
-####  I wont call 2.1.4 the holy grsil yey finally the plugin now shows up the visual plugin editor works - sorta! (Read: displays :)
+## What's New in v2.2.0
 
-## 🎨 Features
+- **Redesigned Visual Editor** - New vertical flow layout for better workflow
+- **Component Theme Overrides** - Override card theme on individual components
+- **Horizontal Component Picker** - Full-width picker with one row per category
+- **Inline Component Styling** - Properties and theme appear when component selected
+- **Full-Width Canvas** - More space for your card preview
 
-### Visual Editor (NEW!)
-- **Drag & Drop** - Intuitive visual builder with component palette
-- **Live Preview** - See changes instantly with real entity data
-- **Tree View** - Hierarchical component structure for complex layouts
-- **Properties Panel** - Edit component props, bindings, actions, and styling
-- **Grid Positioning** - Precise 12-column grid with drag-to-resize
-- **Theme Editor** - Customize colors, radius, and spacing per card
+## Features
 
-### 34+ Shadcn Components (v2.1.0)
-**Complete core component coverage** from shadcn/ui:
+### Visual Editor (v2.2.0 Redesign)
+
+```
+┌──────────────────────────────────────────────────────────┐
+│ Visual Editor                                   1 comp   │
+├──────────────────────────────────────────────────────────┤
+│ Card Theme: [■Pri] [■Sec] [■BG] [■FG] Radius Gap Padding │  ← Collapsible global theme
+├──────────────────────────────────────────────────────────┤
+│ Layout: Grid Card │ Input: Button Switch Slider ...      │  ← Horizontal picker
+├──────────────────────────────────────────────────────────┤
+│ [Button] [Entity▼] [Action▼] [🎨] [🗑] [×]               │  ← Component styling (when selected)
+│ Props: label [Click me] variant [default▼]               │
+│ Theme Override: [■Pri] [■Sec] [■BG] [■FG] Radius [0.5]  │  ← Override card theme!
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│              FULL-WIDTH LIVE CANVAS                      │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+- **Click to Add** - Click any component in the horizontal picker to add it
+- **Inline Editing** - Select component in canvas, edit properties in the panel above
+- **Theme Inheritance** - Components inherit card theme, with optional per-component overrides
+- **Live Preview** - Canvas shows actual rendered components with entity data
+- **Drag to Resize** - Resize handles on selected components
+
+### 34+ Shadcn Components
 
 **Interactive Forms:**
 - Button, Switch, Slider, Checkbox, RadioGroup, Toggle, Select, Input, Textarea, Combobox
@@ -37,11 +61,18 @@ A professional **Visual Editor** for Home Assistant that brings the complete **s
 - Chart, Table, Command, RawHTML (for custom content)
 
 ### Theme System
-- **Per-Card Themes** - Each card can have unique styling
-- **Quick Presets** - Material, Apple, Corporate, Playful
-- **5 Key Controls** - Primary, Secondary, Radius, Background/Foreground, Spacing
-- **Live Updates** - Changes apply instantly via CSS Variables
-- **Shadcn Philosophy** - "Adjust the DNA of components" directly
+
+**Card-Level Theme (Global):**
+- Primary, Secondary, Background, Foreground colors
+- Border radius (Sharp → Bubbly)
+- Gap and Padding spacing
+
+**Component-Level Overrides (NEW!):**
+- Click the 🎨 button when a component is selected
+- Override any theme property for just that component
+- Faded colors = inherited from card
+- Solid colors with border = overridden
+- Small × to clear individual overrides
 
 ### Technical Excellence
 - **Entity Binding** - Connect components to Home Assistant entities
@@ -49,47 +80,15 @@ A professional **Visual Editor** for Home Assistant that brings the complete **s
 - **Jinja2 Templates** - Full templating support for dynamic content
 - **Shadow DOM** - Isolated styling, no conflicts
 - **TypeScript** - Fully typed for safety and IDE support
-- **Accessibility** - ARIA support, keyboard navigation, screen readers
 
-### Shadow DOM Compatibility
-
-**100% Shadow DOM compliant** - All 34 components are production-ready for Home Assistant's isolated environment:
-
-**✅ Custom Implementations (No Radix UI Portals)**
-- Dialog, AlertDialog, Sheet, Popover, Tooltip, HoverCard, Combobox, Command
-- All overlay components use **fixed/absolute positioning** within shadow root
-- No React Portals (which break by rendering to `document.body`)
-
-**✅ Positioning Strategies**
-- **Fixed Overlays:** Dialog, AlertDialog, Sheet, Command use `position: fixed` relative to shadow root viewport
-- **Absolute Dropdowns:** Popover, Combobox, Tooltip use `position: absolute` relative to trigger elements
-- **Z-index Scoping:** All `z-50` values are scoped within shadow root (no conflicts with HA UI)
-
-**✅ Event Handling**
-- Escape key and click-outside detection use `document.addEventListener` (safe - events bubble from shadow root)
-- All listeners properly cleaned up in component unmount
-- Keyboard navigation works globally as expected
-
-**✅ CSS Isolation**
-- All classes prefixed with `shc-` to prevent style leakage
-- Theme system uses CSS Variables (`var(--primary)`, `var(--background)`)
-- Tailwind utilities scoped via PostCSS prefix
-
-**Architecture Decision:** We explicitly avoided Radix UI primitives because:
-1. Portals break in Shadow DOM (cannot append to `document.body`)
-2. Floating UI positioning doesn't work across shadow boundaries
-3. Custom implementations give us full control over Shadow DOM behavior
-
-See `src/renderer/component-map.tsx` for detailed documentation of our Shadow DOM strategy.
-
-## 📦 Installation
+## Installation
 
 ### HACS (Recommended)
 
 1. **Add Custom Repository**
    - Open HACS in Home Assistant
    - Click the 3-dot menu → **Custom repositories**
-   - Add: `https://github.com/YOUR_USERNAME/shadcn-template-card`
+   - Add: `https://github.com/johnneerdael/shadcn-ui-ha-card`
    - Category: **Lovelace**
 
 2. **Install**
@@ -121,97 +120,72 @@ lovelace:
       type: module
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Using the Visual Editor
 
-1. **Add Card**
-   - Edit dashboard → Add Card → Search "Shadcn Template Card"
+1. **Add Card** - Edit dashboard → Add Card → Search "Shadcn Template Card"
 
-2. **Drag Components**
-   - Browse component palette (left panel)
-   - Drag components onto canvas
+2. **Set Card Theme** - Expand the theme row at top, set your colors and spacing
 
-3. **Configure**
-   - Select component
-   - Edit properties (right panel)
-   - Bind to entities
-   - Add actions
+3. **Add Components** - Click components in the horizontal picker to add them
 
-4. **Customize Theme**
-   - Click away from components
-   - Switch to "Theme" tab
-   - Adjust colors, radius, spacing
-   - Apply presets
+4. **Configure Component** - Click component in canvas to select it:
+   - Set entity binding
+   - Choose tap action
+   - Edit component-specific props
+   - Click 🎨 to override theme for this component only
 
-5. **Save**
-   - Changes auto-save to card config
+5. **Arrange** - Drag to reposition, use handles to resize
 
-### Example: Light Control Card
+6. **Save** - Changes auto-save to card config
 
-Visual editor automatically generates this config:
+### Example Config
 
 ```yaml
 type: custom:shadcn-template-card
-title: Living Room
 theme:
   primary: '#0070f3'
+  secondary: '#7c3aed'
   radius: '0.5rem'
   spacing:
-    gap: '0.75rem'
+    gap: '0.5rem'
+    padding: '1rem'
 layout:
-  - i: card-1
+  - i: button-abc123
     x: 0
     y: 0
-    w: 12
-    h: 6
-    component: UiCard
+    w: 4
+    h: 2
+    component: UiButton
+    bind: light.living_room
+    action:
+      type: toggle
     props:
-      title: Lights
-    children:
-      - i: switch-1
-        component: UiSwitch
-        bind: light.living_room
-        action:
-          type: toggle
-        props:
-          label: Main Light
-      - i: slider-1
-        component: UiSlider
-        bind: light.living_room
-        props:
-          label: Brightness
-          min: 0
-          max: 100
+      label: Toggle Light
+      variant: default
+    themeOverride:           # NEW: Per-component theme override
+      primary: '#ef4444'     # This button will be red instead of blue
+  - i: switch-def456
+    x: 4
+    y: 0
+    w: 4
+    h: 2
+    component: UiSwitch
+    bind: switch.fan
+    props:
+      label: Fan
 ```
 
-### Legacy Template Mode
-
-Still supports raw HTML/Jinja templates:
-
-```yaml
-type: custom:shadcn-template-card
-title: Welcome
-content: |
-  <div class="shc-card">
-    <div class="shc-card-header">
-      <h2 class="shc-card-title">Hello, {{ states('sensor.username') }}!</h2>
-    </div>
-    <div class="shc-card-content">
-      <p>Temperature: {{ states('sensor.temperature') }}°C</p>
-    </div>
-  </div>
-```
-
-## 📚 Documentation
+## Documentation
 
 - **[User Guide](docs/USER_GUIDE.md)** - Complete usage guide
 - **[Visual Editor](docs/visual-editor.md)** - Editor features and tips
 - **[Theme System](docs/theme-system.md)** - Theming and customization
-- **[Component Reference](docs/components/)** - All 75 components documented
+- **[Component Reference](docs/components/)** - All components documented
 - **[Examples](docs/examples/)** - Real-world card examples
 
-## 🏗️ Architecture
+## Architecture
 
 ### Technology Stack
 - **Preact** - Lightweight React alternative (3KB)
@@ -224,29 +198,25 @@ content: |
 ```
 src/
 ├── card.ts                 # Custom element & runtime
-├── editor/                 # Visual editor
-│   ├── card-editor.tsx     # Main editor component
-│   ├── component-palette.tsx
-│   ├── split-canvas.tsx    # Preview + grid
-│   ├── properties-panel.tsx
-│   ├── theme-editor.tsx    # NEW: Theme customization
-│   └── tree-view.tsx
-├── components/ui/          # 75 shadcn components
-│   ├── button.tsx
-│   ├── card.tsx
-│   ├── dialog.tsx
-│   └── ... (72 more)
+├── editor/                 # Visual editor (v2.2.0 redesign)
+│   ├── card-editor.tsx     # Main vertical layout
+│   ├── card-settings.tsx   # Global theme row
+│   ├── horizontal-picker.tsx # Component picker
+│   ├── component-styling.tsx # Inline props + theme override
+│   ├── full-width-canvas.tsx # Live preview canvas
+│   ├── tree-view.tsx
+│   └── types.ts            # Includes ComponentThemeOverride
+├── components/ui/          # 34 shadcn components
 ├── renderer/               # Component rendering
 │   ├── layout-renderer.tsx
 │   └── component-map.tsx
 └── lib/                    # Utilities
     ├── binding-engine.ts   # Entity state binding
-    ├── action-handler.ts   # HA actions
     ├── theme-presets.ts    # Theme presets
     └── component-registry.ts
 ```
 
-## 🔧 Development
+## Development
 
 ```bash
 # Install dependencies
@@ -260,41 +230,29 @@ npm run type-check
 
 # Build production
 npm run build
-
-# Validate architecture
-npm run validate
 ```
 
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-1. Check existing issues
-2. Follow TypeScript/Preact conventions
-3. Test in actual Home Assistant
-4. Update documentation
-
-## 📊 Bundle Size
+## Bundle Size
 
 ```
-CSS:  30.60 kB │ gzip:  5.39 kB
-JS:  331.76 kB │ gzip: 74.70 kB
+CSS:  36.78 kB │ gzip:  6.19 kB
+JS:  338.38 kB │ gzip: 77.34 kB
 ```
 
-Includes **29 components (75+ variants)** + visual editor + theme system!
+Includes **34 components** + visual editor + theme system with component overrides!
 
-## 🙏 Credits
+## Credits
 
 - **[shadcn/ui](https://ui.shadcn.com/)** - Component library
 - **[Home Assistant](https://www.home-assistant.io/)** - Smart home platform
 - **[Preact](https://preactjs.com/)** - Fast React alternative
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) for details
 
 ---
 
-**Built with ❤️ for the Home Assistant community**
+**Built with love for the Home Assistant community**
 
 *Need help? Open an issue or check the [User Guide](docs/USER_GUIDE.md)*

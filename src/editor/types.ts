@@ -101,6 +101,28 @@ export interface LayoutItem {
   // Advanced styling (NEW)
   /** Style controls for alignment, spacing, sizing */
   style?: LayoutStyle
+
+  // Component-level theme overrides (NEW)
+  /** Override global theme for this component only */
+  themeOverride?: ComponentThemeOverride
+}
+
+/**
+ * Component-level theme overrides
+ * These values override the card's global theme for a specific component
+ * Undefined values inherit from the global CardTheme
+ */
+export interface ComponentThemeOverride {
+  /** Override primary color */
+  primary?: string
+  /** Override secondary color */
+  secondary?: string
+  /** Override background color */
+  background?: string
+  /** Override foreground/text color */
+  foreground?: string
+  /** Override border radius */
+  radius?: string
 }
 
 /**

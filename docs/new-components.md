@@ -1,6 +1,8 @@
 # New Components Reference
 
-This document covers the **10 new components** added to complete shadcn/ui core component coverage (bringing total to 29 components with 75+ variants).
+This document covers the **advanced components** in Shadcn Template Card (34 total components with 85+ variants).
+
+> **v2.2.0 Note:** All components now support **per-component theme overrides**. See [Theme System](theme-system.md) for details.
 
 ---
 
@@ -609,4 +611,20 @@ All components respect theme variables:
 
 ---
 
-**All 29 components documented!** 🎉
+**All 34 components documented!**
+
+## Using Theme Overrides
+
+Every component supports per-component theme overrides (v2.2.0+):
+
+```yaml
+- component: UiDialog
+  themeOverride:
+    primary: '#ef4444'    # Red accent for this dialog
+    radius: '0.25rem'     # Sharper corners
+  children:
+    - component: UiDialogTrigger
+      # ...
+```
+
+See [Theme System](theme-system.md) for complete documentation. 🎉

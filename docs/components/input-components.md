@@ -2,6 +2,8 @@
 
 Components for user interaction and entity control.
 
+> **Tip:** For visual editing, use the [Visual Editor](../visual-editor.md) to add and configure components with drag-and-drop. Components also support [theme overrides](../theme-system.md#component-theme-override) in v2.2.0+.
+
 ---
 
 ## Button

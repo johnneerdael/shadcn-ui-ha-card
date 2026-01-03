@@ -2,6 +2,10 @@
 
 Complete dashboard configurations for common Home Assistant use cases.
 
+> **v2.2.0 Visual Editor:** For a no-code approach, use the [Visual Editor](../visual-editor.md) to build cards with drag-and-drop. The examples below show advanced YAML configurations with Jinja2 templates.
+>
+> **Theme Overrides:** All components support per-component theme overrides. See [Theme System](../theme-system.md) for details.
+
 ***
 
 ## Climate Control Panel

@@ -1,6 +1,6 @@
 # Visual Editor Guide
 
-The Shadcn Template Card includes a powerful drag-and-drop visual editor that makes building beautiful Home Assistant dashboards easy—no coding required!
+The Shadcn Template Card includes a powerful visual editor that makes building beautiful Home Assistant dashboards easy—no coding required!
 
 ## Table of Contents
 - [Getting Started](#getting-started)
@@ -9,6 +9,7 @@ The Shadcn Template Card includes a powerful drag-and-drop visual editor that ma
 - [Working with Components](#working-with-components)
 - [Entity Binding](#entity-binding)
 - [Actions & Interactivity](#actions--interactivity)
+- [Theme Overrides](#theme-overrides)
 - [Layout & Positioning](#layout--positioning)
 - [Tips & Tricks](#tips--tricks)
 
@@ -23,56 +24,52 @@ The Shadcn Template Card includes a powerful drag-and-drop visual editor that ma
 3. **Search for "Shadcn Template Card"**
 4. **Click to add** - The visual editor opens automatically!
 
-### Interface Overview
+### Interface Overview (v2.2.0)
 
-The editor has **3 main panels**:
+The editor uses a **vertical flow layout**:
 
 ```
-┌─────────────┬──────────────────────┬─────────────┐
-│  Component  │                      │ Properties  │
-│   Palette   │    Live Canvas       │   Panel     │
-│  (Browse)   │  (Drag & Position)   │  (Configure)│
-│             │                      │             │
-│  🎨 Button  │  ┌────────────────┐  │ 🔧 Props    │
-│  🎨 Card    │  │  [Preview]     │  │ 🔗 Binding  │
-│  🎨 Switch  │  │                │  │ ⚡ Actions   │
-│  🎨 Slider  │  │  [Grid]        │  │ 📐 Layout   │
-│  ...        │  └────────────────┘  │             │
-└─────────────┴──────────────────────┴─────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│ Visual Editor                                       1 comp   │
+├──────────────────────────────────────────────────────────────┤
+│ Card Theme: [■Pri] [■Sec] [■BG] [■FG] Radius Gap Padding    │  ← 1. Global Theme
+├──────────────────────────────────────────────────────────────┤
+│ Layout: Grid Card │ Input: Button Switch Slider Checkbox... │  ← 2. Component Picker
+├──────────────────────────────────────────────────────────────┤
+│ [Icon] Button │ [Entity▼] │ [Action▼] │ [🎨] │ [🗑] [×]     │  ← 3. Component Styling
+│ Props: label [Click me] variant [default▼] size [default▼]  │     (when selected)
+│ Theme Override: [■Pri] [■Sec] [■BG] [■FG] Radius [0.5] rem  │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│                  FULL-WIDTH LIVE CANVAS                      │  ← 4. Canvas
+│              (Click components to select them)               │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-#### 1. Component Palette (Left)
-- Browse **75+ shadcn components**
-- Organized by category
-- **Drag** components onto canvas
-- **Search** to find components quickly
+#### 1. Card Theme (Top Bar)
+- **Collapsible row** with global theme settings
+- Set **Primary, Secondary, Background, Foreground** colors
+- Configure **Border Radius, Gap, Padding**
+- Click chevron to collapse when not needed
 
-#### 2. Live Canvas (Center)
-**Split view with resizable divider:**
+#### 2. Horizontal Component Picker
+- **Full-width** component picker organized by category
+- **One row per category**: Layout, Input, Feedback, Data
+- **Click to add** - Component appears in canvas and is auto-selected
 
-- **Top: Live Preview**
-  - See your card with real entity data
-  - Fully interactive (switches work, buttons click)
-  - Automatically updates when entities change
+#### 3. Component Styling Panel
+- **Only appears when a component is selected**
+- Shows component **icon, name, entity binding, action selector**
+- **Props row** - Component-specific properties (label, variant, size, etc.)
+- **Theme Override row** - Click 🎨 to override card theme for this component
 
-- **Bottom: Grid Canvas**
-  - 12-column grid for precise positioning
-  - **Drag** to move components
-  - **Resize** with corner handles
-  - Grid snapping for perfect alignment
-
-#### 3. Properties Panel (Right)
-**Two modes:**
-
-- **When component selected:** Edit properties
-  - Component Props (text, colors, variants)
-  - Entity Binding (connect to HA entities)
-  - Actions (what happens on click/change)
-  - Layout & Alignment controls
-
-- **When nothing selected:** Card configuration
-  - **Theme Tab:** Customize colors, radius, spacing
-  - **Tree Tab:** View component hierarchy
+#### 4. Full-Width Canvas
+- **Live preview** with actual entity data
+- **Click to select** components
+- **Drag to reposition** components
+- **Resize handles** on selected components
+- **Delete button** (×) on hover/selection
 
 ---
 
@@ -80,49 +77,52 @@ The editor has **3 main panels**:
 
 Let's build a **light control card** step-by-step:
 
-### Step 1: Add a Card Container
+### Step 1: Set Card Theme
 
-1. Find **"Card"** in the palette
-2. **Drag** onto canvas
-3. Click to select it
-4. In properties panel:
-   - Set **title:** "Living Room"
-   - Set **description:** "Control your lights"
+1. Look at the **Card Theme** row at the top
+2. Click color pickers to choose your colors
+3. Set **Radius** (0 = sharp, 1 = rounded)
+4. Set **Gap** and **Padding** for spacing
 
-### Step 2: Add a Switch
+### Step 2: Add a Button
 
-1. Find **"Switch"** in palette
-2. **Drag into the card** (you'll see it nested in tree view)
-3. Select the switch
-4. In **Properties** tab:
-   - Set **label:** "Main Light"
-5. In **Binding** section:
-   - Click **entity picker**
-   - Choose `light.living_room`
-6. In **Action** section:
-   - Select action type: **Toggle**
+1. Find **"Button"** in the Input row of the picker
+2. **Click it** - Button appears in canvas and is selected
+3. The **Component Styling panel** appears above the canvas:
+   - Set **label**: "Toggle Light"
+   - Choose **entity**: `light.living_room`
+   - Set **action**: Toggle
 
-### Step 3: Add Brightness Slider
+### Step 3: Add a Switch
 
-1. Drag **"Slider"** into the card
-2. Configure properties:
-   - **label:** "Brightness"
-   - **min:** 0
-   - **max:** 100
-3. Bind to same entity: `light.living_room`
-4. The slider automatically controls brightness!
+1. Click **"Switch"** in the picker
+2. It's auto-selected, so configure it:
+   - **label**: "Main Light"
+   - **entity**: `light.living_room`
+   - **action**: Toggle
 
-### Step 4: Test It
+### Step 4: Add a Slider for Brightness
 
-- Switch to **Preview** pane (top)
+1. Click **"Slider"** in the picker
+2. Configure:
+   - **label**: "Brightness"
+   - **min**: 0, **max**: 100
+   - **entity**: `light.living_room`
+
+### Step 5: Make the Button Stand Out
+
+1. Click the button in the canvas to select it
+2. Click the **🎨 palette button** in the styling panel
+3. The **Theme Override** row appears
+4. Click the **Primary** color and change it to red (#ef4444)
+5. Now this button has a red theme while others use card theme!
+
+### Step 6: Test It
+
 - Toggle the switch → light turns on/off
 - Move slider → brightness changes
+- Click button → light toggles
 - It's fully functional!
-
-### Step 5: Save
-
-- Click **Save** or click outside editor
-- Changes are automatically saved to your dashboard
 
 ---
 
@@ -130,63 +130,42 @@ Let's build a **light control card** step-by-step:
 
 ### Component Categories
 
-**Interactive Forms:**
-- Button, Switch, Slider, Checkbox, RadioGroup, Toggle, Select, Input, Textarea
+**Layout:**
+- Grid, Card, Tabs, Accordion, Collapsible, AspectRatio, ScrollArea, Separator
 
-**Display & Feedback:**
-- Alert, Badge, Progress, Skeleton, Separator, Avatar, Label
+**Input:**
+- Button, Switch, Slider, Checkbox, RadioGroup, Toggle, Select, Input, Textarea, Combobox
 
-**Layout Containers:**
-- Card, Tabs, Accordion, Collapsible, AspectRatio
-
-**Advanced UI:**
-- Dialog, AlertDialog, Sheet, Popover, HoverCard, Tooltip
+**Feedback:**
+- Alert, Badge, Progress, Skeleton, Avatar, Label, Toast
 
 **Data:**
-- Chart, RawHTML
+- Chart, Table, Command, RawHTML
 
 ### Adding Components
 
-**Method 1: Drag & Drop**
-```
-1. Find component in palette
-2. Drag onto canvas
-3. Drop where you want it
-```
+**Click in Picker:**
+1. Find component in horizontal picker
+2. Click it
+3. Component appears in canvas, auto-selected
+4. Configure in styling panel above
 
-**Method 2: Click to Add**
-```
-1. Click component in palette
-2. It appears on canvas
-3. Drag to position
-```
+### Selecting Components
 
-### Nesting Components
+**In Canvas:**
+- Click any component to select it
+- Selection shows with highlight ring
+- Component name label appears on hover/selection
+- Delete button (×) appears top-right
 
-Some components are **containers** that hold other components:
+**Deselecting:**
+- Click empty area in canvas
+- Or click the × button in styling panel
 
-**Card → Switch, Slider, Button**
-```yaml
-UiCard
-├── UiSwitch
-├── UiSlider
-└── UiButton
-```
+### Deleting Components
 
-**Tabs → Multiple Tab Content Areas**
-```yaml
-UiTabs
-├── UiTabsList
-│   ├── UiTabsTrigger (Tab 1)
-│   └── UiTabsTrigger (Tab 2)
-├── UiTabsContent (Content 1)
-└── UiTabsContent (Content 2)
-```
-
-**To nest components:**
-1. Drag child component **onto** the parent
-2. Or use **Tree View** to see/reorganize hierarchy
-3. Children inherit parent's layout (vertical stack by default)
+- **From canvas:** Click × button on selected component
+- **From styling panel:** Click trash icon (🗑)
 
 ---
 
@@ -194,113 +173,95 @@ UiTabs
 
 Connect components to Home Assistant entities for **live data**:
 
-### Basic Binding
+### Binding in Component Styling
 
-1. **Select component**
-2. **Scroll to "Entity Binding" section**
-3. **Click entity picker** (or type entity ID)
-4. **Choose entity** from list
-
-**What happens:**
-- Component shows current entity state
-- Updates automatically when state changes
-- For switches/sliders: Controls the entity
+1. **Select component** in canvas
+2. In the styling panel, find the **entity picker** (with link icon)
+3. **Type or select** entity ID
+4. Component now shows live entity state!
 
 ### Binding Examples
 
-**Switch → Light:**
-```
-Entity: light.living_room
-→ Shows on/off state
-→ Toggles light when clicked
-```
-
-**Slider → Light Brightness:**
-```
-Entity: light.living_room
-→ Shows current brightness (0-255)
-→ Changes brightness when moved
-```
-
-**Label → Temperature:**
-```
-Entity: sensor.temperature
-→ Shows current temperature value
-→ Updates every time sensor changes
-```
-
-**Badge → Door Status:**
-```
-Entity: binary_sensor.front_door
-→ Shows "open" or "closed"
-→ Changes color based on state
-```
-
-### Advanced Binding
-
-For complex scenarios, you can:
-- Bind **multiple components** to same entity
-- Use **Jinja templates** in props for custom formatting
-- Combine with **Actions** for custom behavior
+| Component | Entity | Behavior |
+|-----------|--------|----------|
+| Switch | `light.living_room` | Shows on/off, toggles when clicked |
+| Slider | `light.living_room` | Shows brightness, changes when moved |
+| Label | `sensor.temperature` | Shows current value |
+| Badge | `binary_sensor.door` | Shows open/closed state |
+| Progress | `sensor.battery` | Shows battery percentage |
 
 ---
 
 ## Actions & Interactivity
 
-Make components **do things** when clicked:
-
 ### Action Types
 
-**1. Toggle**
-- Toggles entity on/off
-- Works with: lights, switches, input_boolean
-- Example: Light switch button
+Select from the **Action dropdown** in the styling panel:
 
-**2. Call Service**
-- Calls any Home Assistant service
-- Customize with service data
-- Example: Play media, set thermostat, trigger automation
-
-**3. More Info**
-- Opens entity's more-info dialog
-- Shows full entity details
-- Example: Click sensor to see history graph
-
-**4. Navigate**
-- Go to another dashboard/view
-- Example: "Open Settings" button
-
-**5. Fire Event**
-- Fire custom browser events
-- For advanced integrations
-- Example: Trigger custom JavaScript
+| Action | Description | Use Case |
+|--------|-------------|----------|
+| **Toggle** | Turn entity on/off | Lights, switches, fans |
+| **Service** | Call any HA service | Custom automations |
+| **Info** | Open more-info dialog | Show entity details |
+| **Navigate** | Go to another view | Dashboard navigation |
 
 ### Configuring Actions
 
-1. **Select component**
-2. **Scroll to "Action Configuration"**
-3. **Choose action type**
-4. **Fill in details:**
+1. Select component
+2. Choose action type from dropdown
+3. For **Service**: Additional service input appears
+4. For **Navigate**: Enter the path
 
-**For Call Service:**
-```
-Service: light.turn_on
-Service Data:
-  brightness: 255
-  color_name: red
-```
+---
 
-**For Navigate:**
-```
-Navigation Path: /lovelace/settings
-```
+## Theme Overrides
 
-### Multiple Actions
+**NEW in v2.2.0:** Override card theme on individual components!
 
-You can add actions to:
-- **onClick:** What happens when clicked
-- **onChange:** What happens when value changes (sliders, switches)
-- **onHover:** What happens on hover (advanced)
+### How It Works
+
+1. **Card Theme** (top bar) = Global defaults for all components
+2. **Component Theme Override** = Per-component overrides
+
+### Using Theme Overrides
+
+1. **Select a component** in the canvas
+2. **Click the 🎨 palette button** in the styling panel
+3. **Theme Override row** appears with color pickers
+
+### Visual Indicators
+
+| State | Appearance |
+|-------|------------|
+| **Inherited** | Color picker is faded/dim |
+| **Overridden** | Color picker has primary border + small × to clear |
+
+### Override Options
+
+- **Primary** - Override primary color
+- **Secondary** - Override secondary color
+- **BG** - Override background color
+- **FG** - Override foreground/text color
+- **Radius** - Override border radius (in rem)
+
+### Clearing Overrides
+
+- **Single override:** Click the small × on that color
+- **All overrides:** Click "Clear all" link
+
+### Example: Alert Button
+
+Make a destructive button stand out:
+
+```yaml
+component: UiButton
+props:
+  label: Delete All
+  variant: destructive
+themeOverride:
+  primary: '#dc2626'    # Red instead of card's blue
+  radius: '0.25rem'     # Sharper than card's default
+```
 
 ---
 
@@ -312,212 +273,135 @@ The canvas uses a **12-column grid**:
 
 ```
 ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
-│ │ │ │ │ │ │ │ │ │ │ │ │  Each column = 1 unit
+│1│2│3│4│5│6│7│8│9│10│11│12│
 └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
- 1 2 3 4 5 6 7 8 9 10 11 12
 ```
 
 **Component sizes:**
-- **Full width:** 12 columns (w=12)
-- **Half width:** 6 columns (w=6)
-- **Third width:** 4 columns (w=4)
-- **Quarter width:** 3 columns (w=3)
+- **Full width:** 12 columns
+- **Half width:** 6 columns
+- **Third width:** 4 columns
+- **Quarter width:** 3 columns
 
 ### Moving Components
 
-**Drag to move:**
-1. Click and hold component
-2. Drag to new position
-3. Grid snaps to nearest position
+1. **Click and hold** component in canvas
+2. **Drag** to new position
+3. Grid snaps automatically
 
-**Resize:**
-1. Select component
-2. Drag corner handle
-3. Adjust width/height
+### Resizing Components
 
-### Alignment Controls
-
-In **Properties Panel → Layout & Style**:
-
-**Align Self:**
-- Start (top)
-- Center (middle)
-- End (bottom)
-- Stretch (fill)
-
-**Justify Self:**
-- Start (left)
-- Center (middle)
-- End (right)
-- Stretch (fill)
-
-**Width:**
-- Auto (fits content)
-- Full (100%)
-- Custom (e.g., 200px)
-
-**Spacing:**
-- Gap (space between children)
-- Margin (space outside)
-- Padding (space inside)
-
-### Layout Modes
-
-Components can use different layout modes:
-
-**Grid Mode** (root level)
-- Precise x/y positioning
-- Drag and resize
-- Best for dashboard layout
-
-**Flow Mode** (inside containers)
-- Automatic stacking
-- Vertical or horizontal
-- Best for forms, lists
+1. **Select** component
+2. **Drag corner handle** (bottom-right)
+3. Resize width and height
 
 ---
 
 ## Tips & Tricks
 
-### 🎯 Pro Tips
+### Pro Tips
 
-**1. Use Tree View for Complex Layouts**
-- Click away from components
-- Switch to "Tree" tab
-- See full hierarchy
-- Drag to reorganize
+**1. Set Card Theme First**
+- Define your color scheme before adding components
+- All components will inherit these defaults
 
-**2. Duplicate Components**
-- Select component
-- Copy config from Tree view
-- Paste and modify
-- Saves time for similar items
+**2. Use Theme Overrides Sparingly**
+- Override only for emphasis (alerts, CTAs)
+- Too many overrides = visual chaos
 
-**3. Test in Preview First**
-- Always check Preview pane
-- Test actions work
-- Verify bindings update
-- Ensures quality
+**3. Test Actions Immediately**
+- Canvas is live - actions work!
+- Verify toggle/service calls function
 
-**4. Start with Presets**
-- Use theme presets (Material, Apple, etc.)
-- Customize from there
-- Saves design time
+**4. Collapse What You Don't Need**
+- Collapse Card Theme row when done
+- More canvas space for editing
 
-**5. Group Related Items**
-- Use Card containers
-- Keeps organization clean
-- Easier to move groups
+### Keyboard Shortcuts
 
-### ⚡ Keyboard Shortcuts
+- **Click** - Select component
+- **Delete button** - Remove component
+- **Esc** - Deselect (click empty area)
 
-- **Delete:** Remove selected component
-- **Esc:** Deselect component
-- **Arrow keys:** Nudge position (when selected)
-- **Tab:** Next component
-- **Shift+Tab:** Previous component
+### Troubleshooting
 
-### 🐛 Troubleshooting
-
-**Component won't drop:**
-- Make sure dropping in valid area
-- Check if parent accepts children
-- Try Tree view instead
+**Component won't add:**
+- Ensure you clicked the component button
+- Check canvas for newly added component (may be at bottom)
 
 **Binding not working:**
 - Verify entity ID is correct
 - Check entity exists in HA
-- Ensure entity is available (not unavailable)
+- Ensure entity is not "unavailable"
 
-**Action not firing:**
-- Check action type is appropriate
-- Verify service exists
-- Look at browser console for errors
+**Theme override not showing:**
+- Click the 🎨 button to expand override row
+- Override row only shows when component is selected
 
 **Layout looks wrong:**
-- Check component width settings
-- Verify container layout mode
-- Reset alignment to defaults
-
-### 🎨 Design Best Practices
-
-**Visual Hierarchy:**
-- Use Card components to group related items
-- Bigger components = more important
-- Consistent spacing between sections
-
-**Color & Theme:**
-- Start with a preset theme
-- Use primary color for important actions
-- Secondary color for less important items
-- Keep background/foreground high contrast
-
-**Spacing:**
-- Don't cram too much in one card
-- Use separators between sections
-- Padding creates "breathing room"
-
-**Responsive Design:**
-- Test on mobile view
-- Full-width components work better on mobile
-- Stack vertically for narrow screens
+- Check component width (drag to resize)
+- Verify no overlapping components
 
 ---
 
 ## Advanced Features
 
-### Custom Component Props
-
-Every component has **specific properties**:
+### Component Props by Type
 
 **Button:**
-- variant: default, destructive, outline, ghost
+- variant: default, destructive, outline, secondary, ghost, link
 - size: default, sm, lg, icon
-- disabled: true/false
 
 **Badge:**
 - variant: default, secondary, destructive, outline
-- content: Text to display
 
 **Alert:**
 - variant: default, destructive
-- title: Alert heading
-- description: Alert message
 
-### Layout Style System
+**Progress:**
+- value: 0-100
 
-Fine-tune with **Layout & Style** section:
+### Config Format
 
-```yaml
-style:
-  alignSelf: center      # Vertical alignment
-  justifySelf: center    # Horizontal alignment
-  width: full            # Width control
-  gap: 1rem             # Space between children
-  margin: 1rem          # Outer spacing
-  padding: 1.5rem       # Inner spacing
-```
-
-### Entity State Formatting
-
-Use templates in props:
+The visual editor generates this YAML:
 
 ```yaml
-props:
-  label: "{{ states('sensor.temperature') }}°C"
-  subtitle: "Updated {{ relative_time(states.sensor.temperature.last_changed) }}"
+type: custom:shadcn-template-card
+theme:
+  primary: '#0070f3'
+  secondary: '#7c3aed'
+  background: '#ffffff'
+  foreground: '#000000'
+  radius: '0.5rem'
+  spacing:
+    gap: '0.5rem'
+    padding: '1rem'
+layout:
+  - i: button-abc123
+    x: 0
+    y: 0
+    w: 4
+    h: 2
+    component: UiButton
+    bind: light.living_room
+    action:
+      type: toggle
+    props:
+      label: Toggle Light
+    themeOverride:
+      primary: '#ef4444'
 ```
 
 ---
 
 ## Next Steps
 
-- **[Theme System Guide](theme-system.md)** - Customize colors and styling
-- **[Component Reference](components/)** - Detailed docs for all 75 components
+- **[Theme System Guide](theme-system.md)** - Deep dive into theming
+- **[Component Reference](components/)** - All component props documented
 - **[Examples](examples/)** - Pre-built card templates
 
 **Need help?** Open an issue on GitHub or check the [User Guide](USER_GUIDE.md)
 
 ---
 
-**Happy Building!** 🎉
+**Happy Building!**
