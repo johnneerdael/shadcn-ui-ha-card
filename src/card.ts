@@ -102,8 +102,14 @@ export class shadcnTemplateCard extends HTMLElement {
 
     this._config = { ...config }
 
-    // DEBUG LOGGING: Intentionally kept in production for troubleshooting
-    console.log('shadcn-template-card: setConfig() called with:', config)
+    // DEBUG LOGGING
+    console.log('[ShadcnCard] 📝 setConfig() called with:', config)
+    console.log('[ShadcnCard] 📊 Current state:', {
+      hasHass: !!this._hass,
+      hasBindingEngine: !!this._bindingEngine,
+      hasActionHandler: !!this._actionHandler,
+      isConnected: this._isConnected,
+    })
 
     // CRITICAL: Always initialize and render, even if not connected yet
     // Home Assistant calls setConfig() before connectedCallback() and needs
@@ -117,10 +123,16 @@ export class shadcnTemplateCard extends HTMLElement {
     const previousHass = this._hass
     this._hass = hass
 
+    // DEBUG LOGGING
+    console.log('[ShadcnCard] 🏠 set hass() called')
+    console.log('[ShadcnCard] Hass object:', hass ? 'Present' : 'NULL')
+
     // Initialize binding engine and action handler if not already initialized
     if (hass && !this._bindingEngine) {
+      console.log('[ShadcnCard] 🔧 Initializing BindingEngine and ActionHandler...')
       this._bindingEngine = new BindingEngine(hass as HomeAssistant, this)
       this._actionHandler = new ActionHandler(hass as HomeAssistant, this)
+      console.log('[ShadcnCard] ✅ Engines initialized')
     } else if (hass && this._bindingEngine) {
       // Update hass reference in existing engines
       this._bindingEngine.updateHass(hass as HomeAssistant)
@@ -286,6 +298,11 @@ export class shadcnTemplateCard extends HTMLElement {
         // NEW VISUAL EDITOR FORMAT - Use LayoutRenderer
         if (!this._hass || !this._bindingEngine || !this._actionHandler) {
           // If hass not set yet, show loading state
+          console.log('[ShadcnCard] ⏳ Showing loading state - missing:', {
+            hass: !this._hass,
+            bindingEngine: !this._bindingEngine,
+            actionHandler: !this._actionHandler,
+          })
           const node = h(
             'div',
             {
@@ -299,6 +316,7 @@ export class shadcnTemplateCard extends HTMLElement {
           return
         }
 
+        console.log('[ShadcnCard] 🎨 Rendering layout with', this._config.layout.length, 'items')
         const node = h(
           'div',
           {
