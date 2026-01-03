@@ -7,7 +7,7 @@
 
 // @ts-ignore - Preact JSX pragma
 import { h } from 'preact'
-import { useState, useCallback, useMemo } from 'preact/hooks'
+import { useState, useCallback, useMemo, useRef, useEffect } from 'preact/hooks'
 // @ts-ignore - Type compatibility
 import ReactGridLayout from 'react-grid-layout'
 import type { GridCanvasProps, LayoutItem } from './types'
@@ -97,6 +97,23 @@ export function GridCanvas({
   onDelete,
 }: GridCanvasProps) {
   const [containerWidth, setContainerWidth] = useState(800)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Measure container width for responsive grid (with proper cleanup)
+  useEffect(() => {
+    const node = containerRef.current
+    if (!node) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width)
+      }
+    })
+    resizeObserver.observe(node)
+
+    // Proper cleanup - disconnect observer when component unmounts
+    return () => resizeObserver.disconnect()
+  }, [])
 
   // Convert LayoutItem[] to react-grid-layout format
   const gridLayout = useMemo(() => {
@@ -164,19 +181,6 @@ export function GridCanvas({
     onSelect(null)
   }, [onSelect])
 
-  // Measure container width for responsive grid
-  const measureRef = useCallback((node: HTMLDivElement | null) => {
-    if (node) {
-      const resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          setContainerWidth(entry.contentRect.width)
-        }
-      })
-      resizeObserver.observe(node)
-      return () => resizeObserver.disconnect()
-    }
-  }, [])
-
   // Build grid children
   const gridChildren = layout.map((item) => (
     <div key={item.i} class="relative">
@@ -209,7 +213,7 @@ export function GridCanvas({
 
   return (
     <div
-      ref={measureRef}
+      ref={containerRef}
       class="flex-1 bg-muted/30 overflow-auto p-4"
       onClick={handleCanvasClick}
     >

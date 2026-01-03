@@ -1,6 +1,6 @@
 {
   "name": "shadcn-template-card",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "private": true,
   "type": "module",
   "description": "Home Assistant custom card with 34 shadcn/ui components (85+ variants), visual drag-and-drop editor, per-card theming system, and full entity binding. Power user components: ScrollArea, Toast, Combobox, Table, Command palette.",

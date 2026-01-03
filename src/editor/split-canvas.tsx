@@ -56,19 +56,34 @@ export function SplitCanvas({
   const [bindingEngine, setBindingEngine] = useState<BindingEngine | null>(null)
   const [actionHandler, setActionHandler] = useState<ActionHandler | null>(null)
 
+  // Throttle updateHass to prevent excessive updates (HA updates hass multiple times/sec)
+  const lastHassUpdateRef = useRef<number>(0)
+  const HASS_UPDATE_THROTTLE_MS = 100
+
   // Initialize engines once containerRef is available
   useEffect(() => {
     if (hass && containerRef.current && !bindingEngine && !actionHandler) {
-      setBindingEngine(new BindingEngine(hass as HomeAssistant, containerRef.current))
-      setActionHandler(new ActionHandler(hass as HomeAssistant, containerRef.current))
+      const engine = new BindingEngine(hass as HomeAssistant, containerRef.current)
+      const handler = new ActionHandler(hass as HomeAssistant, containerRef.current)
+      setBindingEngine(engine)
+      setActionHandler(handler)
+
+      // Cleanup on unmount
+      return () => {
+        engine.destroy()
+      }
     }
   }, [hass, bindingEngine, actionHandler])
 
-  // Update engines when hass changes
+  // Update engines when hass changes (throttled to prevent performance issues)
   useEffect(() => {
     if (hass && bindingEngine && actionHandler) {
-      bindingEngine.updateHass(hass as HomeAssistant)
-      actionHandler.updateHass(hass as HomeAssistant)
+      const now = Date.now()
+      if (now - lastHassUpdateRef.current >= HASS_UPDATE_THROTTLE_MS) {
+        lastHassUpdateRef.current = now
+        bindingEngine.updateHass(hass as HomeAssistant)
+        actionHandler.updateHass(hass as HomeAssistant)
+      }
     }
   }, [hass, bindingEngine, actionHandler])
 

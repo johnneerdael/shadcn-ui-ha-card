@@ -66,6 +66,7 @@ export class shadcnTemplateCard extends HTMLElement {
   private _lastTheme?: string
   private _lastThemeVars?: Record<string, string>
   private _updatePending = false
+  private _isRendering = false // Guard against render loops
   private _stylesInjected = false
   private _themeSheet?: CSSStyleSheet
   private _bindingEngine?: BindingEngine
@@ -303,6 +304,12 @@ export class shadcnTemplateCard extends HTMLElement {
       return
     }
 
+    // Prevent recursive renders
+    if (this._isRendering) {
+      return
+    }
+    this._isRendering = true
+
     const root = this.ensureShadowRoot()
 
     try {
@@ -393,6 +400,8 @@ export class shadcnTemplateCard extends HTMLElement {
           <pre style="margin-top: 8px; font-size: 12px; white-space: pre-wrap;">${error instanceof Error ? error.message : String(error)}</pre>
         </div>
       `
+    } finally {
+      this._isRendering = false
     }
   }
 

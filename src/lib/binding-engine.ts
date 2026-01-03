@@ -152,14 +152,61 @@ function debounce<TArgs extends unknown[], TReturn>(
 
 /**
  * Resolves Jinja2 templates using Home Assistant's WebSocket API
- * Includes caching and request deduplication
+ * Includes caching, request deduplication, and automatic cache eviction
  */
 export class JinjaResolver {
   private cache = new Map<string, { value: string; timestamp: number }>()
   private pendingRequests = new Map<string, Promise<string>>()
   private readonly CACHE_TTL = 5000 // 5 seconds
+  private readonly MAX_CACHE_SIZE = 100 // Maximum cache entries
+  private readonly CLEANUP_INTERVAL = 30000 // 30 seconds
+  private cleanupTimer: ReturnType<typeof setInterval> | null = null
 
-  constructor(private hass: HomeAssistant) {}
+  constructor(private hass: HomeAssistant) {
+    // Start periodic cache cleanup
+    this.startCleanupTimer()
+  }
+
+  /**
+   * Start periodic cache cleanup timer
+   */
+  private startCleanupTimer(): void {
+    if (this.cleanupTimer) return
+    this.cleanupTimer = setInterval(() => this.evictExpiredEntries(), this.CLEANUP_INTERVAL)
+  }
+
+  /**
+   * Stop cleanup timer (call on destroy)
+   */
+  stopCleanupTimer(): void {
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer)
+      this.cleanupTimer = null
+    }
+  }
+
+  /**
+   * Remove expired cache entries
+   */
+  private evictExpiredEntries(): void {
+    const now = Date.now()
+    for (const [key, entry] of this.cache.entries()) {
+      if (now - entry.timestamp >= this.CACHE_TTL) {
+        this.cache.delete(key)
+      }
+    }
+
+    // If still over max size, remove oldest entries
+    if (this.cache.size > this.MAX_CACHE_SIZE) {
+      const entries = Array.from(this.cache.entries())
+        .sort((a, b) => a[1].timestamp - b[1].timestamp)
+
+      const toRemove = entries.slice(0, this.cache.size - this.MAX_CACHE_SIZE)
+      for (const [key] of toRemove) {
+        this.cache.delete(key)
+      }
+    }
+  }
 
   /**
    * Resolve a Jinja2 template using HA's WebSocket API
@@ -190,6 +237,12 @@ export class JinjaResolver {
       .then((response) => {
         this.cache.set(template, { value: response.result, timestamp: Date.now() })
         this.pendingRequests.delete(template)
+
+        // Evict if over max size
+        if (this.cache.size > this.MAX_CACHE_SIZE) {
+          this.evictExpiredEntries()
+        }
+
         return response.result
       })
       .catch((error) => {
@@ -213,6 +266,7 @@ export class JinjaResolver {
    */
   clearCache(): void {
     this.cache.clear()
+    this.pendingRequests.clear()
   }
 
   /**
@@ -220,6 +274,14 @@ export class JinjaResolver {
    */
   updateHass(hass: HomeAssistant): void {
     this.hass = hass
+  }
+
+  /**
+   * Clean up resources (call when destroying the resolver)
+   */
+  destroy(): void {
+    this.stopCleanupTimer()
+    this.clearCache()
   }
 }
 
@@ -400,6 +462,13 @@ export class BindingEngine {
    */
   clearCache(): void {
     this.jinjaResolver.clearCache()
+  }
+
+  /**
+   * Clean up resources (call when destroying the engine)
+   */
+  destroy(): void {
+    this.jinjaResolver.destroy()
   }
 
   /**

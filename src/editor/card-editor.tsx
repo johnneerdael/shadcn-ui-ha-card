@@ -208,9 +208,11 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
  */
 export class ShadcnCardEditorElement extends HTMLElement {
   private _config: EditorConfig = { type: 'custom:shadcn-template-card', layout: [] }
-  private _hass: unknown
+  private _hass: unknown = null
   private _root?: ShadowRoot
   private _stylesInjected = false
+  private _isRendering = false // Guard against render loops
+  private _renderPending = false // Debounce rapid updates
 
   constructor() {
     super()
@@ -232,6 +234,24 @@ export class ShadcnCardEditorElement extends HTMLElement {
     this.ensureShadowRoot()
     this.injectStyles()
     this.render()
+  }
+
+  /**
+   * Cleanup when element is removed from DOM
+   */
+  disconnectedCallback(): void {
+    // Cancel any pending renders
+    this._renderPending = false
+    this._isRendering = false
+
+    // Unmount Preact component from shadow root
+    if (this._root) {
+      render(null, this._root)
+    }
+
+    // Clear references to allow garbage collection
+    this._hass = null
+    this._config = { type: 'custom:shadcn-template-card', layout: [] }
   }
 
   /**
@@ -269,7 +289,7 @@ export class ShadcnCardEditorElement extends HTMLElement {
    */
   set hass(hass: unknown) {
     this._hass = hass
-    this.render()
+    this.scheduleRender()
   }
 
   /**
@@ -277,6 +297,11 @@ export class ShadcnCardEditorElement extends HTMLElement {
    * Dispatches 'config-changed' event for Home Assistant
    */
   private handleConfigChange = (newConfig: EditorConfig): void => {
+    // Prevent triggering during render cycle (HA elements can fire events during mount)
+    if (this._isRendering) {
+      return
+    }
+
     this._config = newConfig
 
     // Dispatch event for Home Assistant
@@ -287,23 +312,45 @@ export class ShadcnCardEditorElement extends HTMLElement {
     })
     this.dispatchEvent(event)
 
-    // Re-render with new config
-    this.render()
+    // Schedule re-render (debounced)
+    this.scheduleRender()
+  }
+
+  /**
+   * Schedule a render on the next animation frame
+   * This debounces rapid updates and prevents render loops
+   */
+  private scheduleRender(): void {
+    if (this._renderPending) return
+
+    this._renderPending = true
+    requestAnimationFrame(() => {
+      this._renderPending = false
+      this.render()
+    })
   }
 
   /**
    * Render the Preact component
    */
   private render(): void {
-    const root = this.ensureShadowRoot()
-    render(
-      h(CardEditor, {
-        hass: this._hass,
-        config: this._config,
-        onChange: this.handleConfigChange,
-      }),
-      root
-    )
+    // Prevent recursive renders
+    if (this._isRendering) return
+    this._isRendering = true
+
+    try {
+      const root = this.ensureShadowRoot()
+      render(
+        h(CardEditor, {
+          hass: this._hass,
+          config: this._config,
+          onChange: this.handleConfigChange,
+        }),
+        root
+      )
+    } finally {
+      this._isRendering = false
+    }
   }
 }
 
