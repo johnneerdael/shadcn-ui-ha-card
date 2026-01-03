@@ -6,7 +6,7 @@
 
 A professional **Visual Editor** for Home Assistant that brings the complete **shadcn/ui component library** (34 components, 85+ variants) with drag-and-drop layout, live preview, and per-card theming. Build beautiful, interactive dashboards without writing code!
 
-####  I wont call 2.1.4 the holy grsil yey finally the plugin shows up dn the visual plugin edotor works! (Read: displays :)
+####  I wont call 2.1.4 the holy grsil yey finally the plugin now shows up the visual plugin editor works - sorta! (Read: displays :)
 
 ## 🎨 Features
 
