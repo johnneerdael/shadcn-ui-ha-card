@@ -61,7 +61,7 @@ export class shadcnTemplateCard extends HTMLElement {
 
   private _config?: shadcnTemplateCardConfig
   private _hass?: HassLike
-  private readonly _root: ShadowRoot
+  private _root?: ShadowRoot
   private _isConnected = false
   private _lastTheme?: string
   private _lastThemeVars?: Record<string, string>
@@ -73,11 +73,26 @@ export class shadcnTemplateCard extends HTMLElement {
 
   constructor() {
     super()
-    this._root = this.attachShadow({ mode: 'open' })
+    // Shadow DOM is now created lazily via ensureShadowRoot()
+    // This fixes HA's custom element detection which has issues
+    // when attachShadow() is called in the constructor
+  }
+
+  /**
+   * Lazily create and return the shadow root
+   * This pattern is required for Home Assistant compatibility
+   */
+  private ensureShadowRoot(): ShadowRoot {
+    if (!this._root) {
+      this._root = this.attachShadow({ mode: 'open' })
+    }
+    return this._root
   }
 
   connectedCallback(): void {
     this._isConnected = true
+    // Ensure shadow root exists before injecting styles
+    this.ensureShadowRoot()
     // Inject bundled CSS into shadow root
     this.injectStyles()
     // If config was set before connection, update again to ensure everything is ready
@@ -111,9 +126,10 @@ export class shadcnTemplateCard extends HTMLElement {
       isConnected: this._isConnected,
     })
 
-    // CRITICAL: Always initialize and render, even if not connected yet
+    // CRITICAL: Ensure shadow root exists before any rendering
     // Home Assistant calls setConfig() before connectedCallback() and needs
     // content in the shadow root immediately to stop showing loading spinner
+    this.ensureShadowRoot()
     this.injectStyles()
     this.applyTheme()
     this.update()
@@ -208,15 +224,17 @@ export class shadcnTemplateCard extends HTMLElement {
   private injectStyles(): void {
     if (this._stylesInjected) return
 
+    const root = this.ensureShadowRoot()
+
     // Create and populate a CSSStyleSheet with the bundled CSS
     const sheet = new CSSStyleSheet()
     sheet.replaceSync(generatedCss)
 
     // Apply to shadow root using adoptedStyleSheets API
-    this._root.adoptedStyleSheets = [sheet]
+    root.adoptedStyleSheets = [sheet]
 
     // Initialize component-specific styles from the registry
-    componentRegistry.initAll(this._root)
+    componentRegistry.initAll(root)
 
     this._stylesInjected = true
   }
@@ -231,6 +249,7 @@ export class shadcnTemplateCard extends HTMLElement {
       return
     }
 
+    const root = this.ensureShadowRoot()
     const theme = this._config.theme
     const cssVars = this.buildCSSVariables(theme)
 
@@ -238,7 +257,7 @@ export class shadcnTemplateCard extends HTMLElement {
     if (!this._themeSheet) {
       this._themeSheet = new CSSStyleSheet()
       // Prepend theme sheet to existing stylesheets
-      this._root.adoptedStyleSheets = [this._themeSheet, ...this._root.adoptedStyleSheets]
+      root.adoptedStyleSheets = [this._themeSheet, ...root.adoptedStyleSheets]
     }
 
     // Apply CSS variables to :host
@@ -284,6 +303,8 @@ export class shadcnTemplateCard extends HTMLElement {
       return
     }
 
+    const root = this.ensureShadowRoot()
+
     try {
       const title = this._config.title ?? 'shadcn-template-card'
       const themeVars = this.getThemeVariables()
@@ -312,7 +333,7 @@ export class shadcnTemplateCard extends HTMLElement {
             h('div', { class: 'text-xs uppercase tracking-[0.14em] text-muted-foreground' }, title),
             h('div', { class: 'text-sm text-muted-foreground' }, 'Waiting for Home Assistant connection...')
           )
-          render(node, this._root)
+          render(node, root)
           return
         }
 
@@ -332,7 +353,7 @@ export class shadcnTemplateCard extends HTMLElement {
           })
         )
 
-        render(node, this._root)
+        render(node, root)
       } else {
         // LEGACY TEMPLATE FORMAT - Use old rendering
         const raw = ('content' in this._config ? this._config.content : undefined) ?? 'Template content goes here.'
@@ -361,12 +382,12 @@ export class shadcnTemplateCard extends HTMLElement {
           )
         )
 
-        render(node, this._root)
+        render(node, root)
       }
     } catch (error) {
       console.error('shadcn-template-card: Failed to render card:', error)
       // Render error state in shadow root
-      this._root.innerHTML = `
+      root.innerHTML = `
         <div style="padding: 16px; color: #ef4444; border: 1px solid #ef4444; border-radius: 8px; background: rgba(239, 68, 68, 0.1);">
           <strong>Error rendering card:</strong>
           <pre style="margin-top: 8px; font-size: 12px; white-space: pre-wrap;">${error instanceof Error ? error.message : String(error)}</pre>

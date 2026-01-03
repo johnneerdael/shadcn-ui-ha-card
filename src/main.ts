@@ -3,7 +3,6 @@ import { shadcnTemplateCard } from './card'
 import type { shadcnTemplateCardConfig } from './card'
 import { ShadcnCardEditorElement } from './editor'
 import {
-  CARD_TYPE,
   CARD_NAME,
   CARD_DESCRIPTION,
   DOCUMENTATION_URL,
@@ -21,18 +20,27 @@ console.log('[ShadcnCard] 📦 Card class:', shadcnTemplateCard)
 console.log('[ShadcnCard] 🎨 Editor class:', ShadcnCardEditorElement)
 
 // Registration must happen synchronously at module load
+// Use defensive checks to prevent double-registration issues
 try {
-  console.log('[ShadcnCard] 🔧 Registering card element: shadcn-template-card')
-  customElements.define('shadcn-template-card', shadcnTemplateCard)
-  console.log('[ShadcnCard] ✅ Card element registered successfully')
+  if (!customElements.get('shadcn-template-card')) {
+    console.log('[ShadcnCard] 🔧 Registering card element: shadcn-template-card')
+    customElements.define('shadcn-template-card', shadcnTemplateCard)
+    console.log('[ShadcnCard] ✅ Card element registered successfully')
+  } else {
+    console.warn('[ShadcnCard] ⚠️ Card element already registered, skipping')
+  }
 } catch (error) {
   console.error('[ShadcnCard] ❌ Card registration failed:', error)
 }
 
 try {
-  console.log('[ShadcnCard] 🔧 Registering editor element: shadcn-template-card-editor')
-  customElements.define('shadcn-template-card-editor', ShadcnCardEditorElement)
-  console.log('[ShadcnCard] ✅ Editor element registered successfully')
+  if (!customElements.get('shadcn-template-card-editor')) {
+    console.log('[ShadcnCard] 🔧 Registering editor element: shadcn-template-card-editor')
+    customElements.define('shadcn-template-card-editor', ShadcnCardEditorElement)
+    console.log('[ShadcnCard] ✅ Editor element registered successfully')
+  } else {
+    console.warn('[ShadcnCard] ⚠️ Editor element already registered, skipping')
+  }
 } catch (error) {
   console.error('[ShadcnCard] ❌ Editor registration failed:', error)
 }
@@ -59,7 +67,7 @@ declare global {
 console.log('[ShadcnCard] 🎯 Adding to card picker...')
 window.customCards = window.customCards || []
 window.customCards.push({
-  type: CARD_TYPE,
+  type: 'shadcn-template-card',  // NO "custom:" prefix for card picker!
   name: CARD_NAME,
   description: CARD_DESCRIPTION,
   preview: false,

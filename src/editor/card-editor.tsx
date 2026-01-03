@@ -209,15 +209,27 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
 export class ShadcnCardEditorElement extends HTMLElement {
   private _config: EditorConfig = { type: 'custom:shadcn-template-card', layout: [] }
   private _hass: unknown
-  private _root: ShadowRoot
+  private _root?: ShadowRoot
   private _stylesInjected = false
 
   constructor() {
     super()
-    this._root = this.attachShadow({ mode: 'open' })
+    // Shadow DOM is created lazily via ensureShadowRoot()
+    // This fixes HA's custom element detection
+  }
+
+  /**
+   * Lazily create and return the shadow root
+   */
+  private ensureShadowRoot(): ShadowRoot {
+    if (!this._root) {
+      this._root = this.attachShadow({ mode: 'open' })
+    }
+    return this._root
   }
 
   connectedCallback(): void {
+    this.ensureShadowRoot()
     this.injectStyles()
     this.render()
   }
@@ -228,6 +240,8 @@ export class ShadcnCardEditorElement extends HTMLElement {
   private injectStyles(): void {
     if (this._stylesInjected) return
 
+    const root = this.ensureShadowRoot()
+
     // Create stylesheet with Tailwind CSS
     const tailwindSheet = new CSSStyleSheet()
     tailwindSheet.replaceSync(generatedCss)
@@ -236,7 +250,7 @@ export class ShadcnCardEditorElement extends HTMLElement {
     const gridSheet = new CSSStyleSheet()
     gridSheet.replaceSync(gridLayoutCss)
 
-    this._root.adoptedStyleSheets = [tailwindSheet, gridSheet]
+    root.adoptedStyleSheets = [tailwindSheet, gridSheet]
     this._stylesInjected = true
   }
 
@@ -245,6 +259,8 @@ export class ShadcnCardEditorElement extends HTMLElement {
    */
   setConfig(config: EditorConfig): void {
     this._config = config
+    this.ensureShadowRoot()
+    this.injectStyles()
     this.render()
   }
 
@@ -279,13 +295,14 @@ export class ShadcnCardEditorElement extends HTMLElement {
    * Render the Preact component
    */
   private render(): void {
+    const root = this.ensureShadowRoot()
     render(
       h(CardEditor, {
         hass: this._hass,
         config: this._config,
         onChange: this.handleConfigChange,
       }),
-      this._root
+      root
     )
   }
 }
