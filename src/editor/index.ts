@@ -3,9 +3,6 @@
  */
 
 export { ShadcnCardEditorElement, default as CardEditor } from './card-editor'
-export { ComponentPalette } from './component-palette'
-export { GridCanvas } from './grid-canvas'
-export { PropertiesPanel } from './properties-panel'
 
 export type {
   EditorConfig,
@@ -14,9 +11,6 @@ export type {
   PaletteItem,
   EditorState,
   CardEditorProps,
-  ComponentPaletteProps,
-  GridCanvasProps,
-  PropertiesPanelProps,
   FormField,
 } from './types'
 

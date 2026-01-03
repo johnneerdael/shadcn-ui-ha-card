@@ -209,52 +209,6 @@ export interface CardEditorProps {
 }
 
 /**
- * Props for the ComponentPalette
- */
-export interface ComponentPaletteProps {
-  /** Callback when a component is dragged/dropped onto canvas */
-  onAddComponent: (componentType: string) => void
-}
-
-/**
- * Props for the GridCanvas
- */
-export interface GridCanvasProps {
-  /** Layout items to render */
-  layout: LayoutItem[]
-  /** Currently selected item ID */
-  selectedId: string | null
-  /** Callback when layout changes (drag/resize) */
-  onLayoutChange: (layout: LayoutItem[]) => void
-  /** Callback when an item is selected */
-  onSelect: (id: string | null) => void
-  /** Callback when an item should be deleted */
-  onDelete: (id: string) => void
-}
-
-/**
- * Props for the PropertiesPanel
- */
-export interface PropertiesPanelProps {
-  /** Home Assistant instance for entity picker */
-  hass: unknown
-  /** Full editor configuration (for theme editing) */
-  config: EditorConfig
-  /** Currently selected layout item */
-  selectedItem: LayoutItem | null
-  /** All layout items (for tree view) */
-  layout: LayoutItem[]
-  /** Callback when item properties change */
-  onPropertyChange: (itemId: string, updates: Partial<LayoutItem>) => void
-  /** Callback when config changes (for theme) */
-  onConfigChange: (config: EditorConfig) => void
-  /** Callback when an item is selected (for tree view) */
-  onSelect: (id: string | null) => void
-  /** Callback when an item should be deleted (for tree view) */
-  onDelete: (id: string) => void
-}
-
-/**
  * Form field definition for auto-generated property forms
  */
 export interface FormField {

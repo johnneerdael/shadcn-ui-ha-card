@@ -5,7 +5,7 @@
  * 1. Card Theme Settings (top)
  * 2. Horizontal Component Picker (full-width, 1 row per category)
  * 3. Component Styling Panel (appears when component selected)
- * 4. Full-width Canvas with live preview (bottom)
+ * 4. Full-width Canvas with live preview (bottom - fills remaining space)
  */
 
 import { h, render } from 'preact'
@@ -184,8 +184,8 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
 
   return (
     <div class="shadcn-root h-[700px] flex flex-col bg-background text-foreground rounded-lg overflow-hidden border border-border">
-      {/* Toolbar */}
-      <div class="flex items-center justify-between px-3 py-1.5 border-b border-border bg-card">
+      {/* Toolbar - fixed height */}
+      <div class="flex-shrink-0 flex items-center justify-between px-3 py-1.5 border-b border-border bg-card">
         <div class="flex items-center gap-2">
           <ha-icon icon="mdi:view-dashboard-edit" class="w-4 h-4 text-primary" />
           <span class="font-semibold text-sm">Visual Editor</span>
@@ -195,38 +195,46 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
         </div>
       </div>
 
-      {/* 1. Card Theme Settings */}
-      <CardSettings
-        theme={config.theme}
-        onChange={handleThemeChange}
-      />
-
-      {/* 2. Horizontal Component Picker */}
-      <HorizontalPicker
-        onAddComponent={handleAddComponent}
-      />
-
-      {/* 3. Component Styling Panel (when component selected) */}
-      {selectedItem && (
-        <ComponentStyling
-          hass={hass}
-          selectedItem={selectedItem}
-          globalTheme={config.theme}
-          onPropertyChange={handlePropertyChange}
-          onDeselect={() => setSelectedId(null)}
-          onDelete={handleDelete}
+      {/* 1. Card Theme Settings - fixed height, doesn't shrink */}
+      <div class="flex-shrink-0">
+        <CardSettings
+          theme={config.theme}
+          onChange={handleThemeChange}
         />
+      </div>
+
+      {/* 2. Horizontal Component Picker - fixed height, doesn't shrink */}
+      <div class="flex-shrink-0">
+        <HorizontalPicker
+          onAddComponent={handleAddComponent}
+        />
+      </div>
+
+      {/* 3. Component Styling Panel (when component selected) - limited height with scroll */}
+      {selectedItem && (
+        <div class="flex-shrink-0 max-h-[180px] overflow-y-auto border-b border-border">
+          <ComponentStyling
+            hass={hass}
+            selectedItem={selectedItem}
+            globalTheme={config.theme}
+            onPropertyChange={handlePropertyChange}
+            onDeselect={() => setSelectedId(null)}
+            onDelete={handleDelete}
+          />
+        </div>
       )}
 
-      {/* 4. Full-width Canvas */}
-      <FullWidthCanvas
-        layout={layout}
-        selectedId={selectedId}
-        hass={hass}
-        onLayoutChange={handleLayoutChange}
-        onSelect={handleSelect}
-        onDelete={handleDelete}
-      />
+      {/* 4. Full-width Canvas - fills ALL remaining space, guaranteed min height */}
+      <div class="flex-1 min-h-[250px] overflow-hidden">
+        <FullWidthCanvas
+          layout={layout}
+          selectedId={selectedId}
+          hass={hass}
+          onLayoutChange={handleLayoutChange}
+          onSelect={handleSelect}
+          onDelete={handleDelete}
+        />
+      </div>
     </div>
   )
 }
