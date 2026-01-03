@@ -151,7 +151,7 @@ function ColorField({ label, value, onChange }: ColorFieldProps) {
 }
 
 /**
- * Radius slider (0rem to 1rem)
+ * Radius slider with numeric input (0rem to 1rem)
  */
 interface RadiusSliderProps {
   value: string
@@ -162,17 +162,35 @@ function RadiusSlider({ value, onChange }: RadiusSliderProps) {
   // Parse rem value to number
   const numValue = parseFloat(value.replace('rem', '')) || 0.5
 
-  const handleChange = (e: Event) => {
+  const handleSliderChange = (e: Event) => {
     const target = e.target as HTMLInputElement
     const rem = parseFloat(target.value)
     onChange(`${rem}rem`)
+  }
+
+  const handleInputChange = (e: Event) => {
+    const target = e.target as HTMLInputElement
+    const rem = parseFloat(target.value) || 0
+    const clamped = Math.max(0, Math.min(1, rem))
+    onChange(`${clamped}rem`)
   }
 
   return (
     <div class="space-y-2">
       <div class="flex items-center justify-between">
         <label class="text-sm text-foreground">Border Radius</label>
-        <span class="text-xs text-muted-foreground font-mono">{value}</span>
+        <div class="flex items-center gap-1">
+          <input
+            type="number"
+            min="0"
+            max="1"
+            step="0.05"
+            value={numValue}
+            onChange={handleInputChange}
+            class="h-6 w-14 px-1.5 text-xs rounded border border-input bg-background text-foreground font-mono text-right"
+          />
+          <span class="text-xs text-muted-foreground">rem</span>
+        </div>
       </div>
 
       <input
@@ -181,11 +199,11 @@ function RadiusSlider({ value, onChange }: RadiusSliderProps) {
         max="1"
         step="0.05"
         value={numValue}
-        onChange={handleChange}
+        onChange={handleSliderChange}
         class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
       />
 
-      <div class="flex justify-between text-xs text-muted-foreground">
+      <div class="flex justify-between text-[10px] text-muted-foreground">
         <span>Sharp</span>
         <span>Bubbly</span>
       </div>
@@ -194,7 +212,7 @@ function RadiusSlider({ value, onChange }: RadiusSliderProps) {
 }
 
 /**
- * Spacing field (rem input)
+ * Spacing field with slider and numeric input (rem)
  */
 interface SpacingFieldProps {
   label: string
@@ -206,17 +224,35 @@ function SpacingField({ label, value, onChange }: SpacingFieldProps) {
   // Parse rem value to number
   const numValue = parseFloat(value.replace('rem', '')) || 0.5
 
-  const handleChange = (e: Event) => {
+  const handleSliderChange = (e: Event) => {
     const target = e.target as HTMLInputElement
     const rem = parseFloat(target.value)
     onChange(`${rem}rem`)
   }
 
+  const handleInputChange = (e: Event) => {
+    const target = e.target as HTMLInputElement
+    const rem = parseFloat(target.value) || 0
+    const clamped = Math.max(0, Math.min(3, rem))
+    onChange(`${clamped}rem`)
+  }
+
   return (
-    <div class="space-y-2">
+    <div class="space-y-1.5">
       <div class="flex items-center justify-between">
         <label class="text-sm text-foreground">{label}</label>
-        <span class="text-xs text-muted-foreground font-mono">{value}</span>
+        <div class="flex items-center gap-1">
+          <input
+            type="number"
+            min="0"
+            max="3"
+            step="0.25"
+            value={numValue}
+            onChange={handleInputChange}
+            class="h-6 w-14 px-1.5 text-xs rounded border border-input bg-background text-foreground font-mono text-right"
+          />
+          <span class="text-xs text-muted-foreground">rem</span>
+        </div>
       </div>
 
       <input
@@ -225,7 +261,7 @@ function SpacingField({ label, value, onChange }: SpacingFieldProps) {
         max="3"
         step="0.25"
         value={numValue}
-        onChange={handleChange}
+        onChange={handleSliderChange}
         class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
       />
     </div>

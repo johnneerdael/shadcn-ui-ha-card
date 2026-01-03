@@ -549,6 +549,8 @@ export function PropertiesPanel({
 }: PropertiesPanelProps) {
   // View toggle state: 'properties' or 'tree' (when component selected), 'theme' or 'tree' (when no selection)
   const [viewMode, setViewMode] = useState<'properties' | 'tree' | 'theme'>('properties')
+  // Collapsed state for the entire panel
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   // Get component definition from registry
   const compDef = useMemo(() => {
@@ -621,6 +623,25 @@ export function PropertiesPanel({
     [config, onConfigChange]
   )
 
+  // Collapsed state - just show expand button
+  if (isCollapsed) {
+    return (
+      <div class="h-full flex flex-col border-l border-border bg-card w-10">
+        <button
+          type="button"
+          class="flex-1 flex flex-col items-center justify-center gap-2 hover:bg-muted transition-colors"
+          onClick={() => setIsCollapsed(false)}
+          title="Expand properties panel"
+        >
+          <ha-icon icon="mdi:chevron-left" class="w-4 h-4 text-muted-foreground" />
+          <span class="text-[10px] text-muted-foreground [writing-mode:vertical-rl] rotate-180">
+            Properties
+          </span>
+        </button>
+      </div>
+    )
+  }
+
   // Empty state - show theme/tree toggle when no selection
   if (!selectedItem) {
     // Default to theme view when no selection
@@ -631,6 +652,14 @@ export function PropertiesPanel({
         <div class="p-3 border-b border-border">
           <div class="flex items-center justify-between mb-2">
             <h3 class="text-sm font-semibold">Card Configuration</h3>
+            <button
+              type="button"
+              class="p-1 hover:bg-muted rounded transition-colors"
+              onClick={() => setIsCollapsed(true)}
+              title="Collapse panel"
+            >
+              <ha-icon icon="mdi:chevron-right" class="w-4 h-4 text-muted-foreground" />
+            </button>
           </div>
 
           {/* Theme/Tree Toggle */}
@@ -688,7 +717,15 @@ export function PropertiesPanel({
       <div class="p-3 border-b border-border">
         <div class="flex items-center gap-2 mb-2">
           <ha-icon icon={compDef?.icon || 'mdi:shape'} class="w-5 h-5 text-primary" />
-          <h3 class="text-sm font-semibold">{displayName}</h3>
+          <h3 class="text-sm font-semibold flex-1">{displayName}</h3>
+          <button
+            type="button"
+            class="p-1 hover:bg-muted rounded transition-colors"
+            onClick={() => setIsCollapsed(true)}
+            title="Collapse panel"
+          >
+            <ha-icon icon="mdi:chevron-right" class="w-4 h-4 text-muted-foreground" />
+          </button>
         </div>
         <p class="text-xs text-muted-foreground mb-3">
           {compDef?.description || 'Configure component properties'}

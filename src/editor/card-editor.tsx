@@ -38,31 +38,44 @@ const gridLayoutCss = `
   transition: none;
   z-index: 3;
   will-change: transform;
+  opacity: 0.9;
 }
 .react-grid-item.dropping {
   visibility: hidden;
 }
 .react-grid-item.react-grid-placeholder {
   background: var(--primary);
-  opacity: 0.2;
+  opacity: 0.4;
   transition-duration: 100ms;
   z-index: 2;
   border-radius: 0.5rem;
+  border: 2px dashed var(--primary);
+  animation: placeholder-pulse 1s ease-in-out infinite;
+}
+@keyframes placeholder-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
 }
 .react-grid-item > .react-resizable-handle {
   position: absolute;
   width: 20px;
   height: 20px;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+.react-grid-item:hover > .react-resizable-handle {
+  opacity: 1;
 }
 .react-grid-item > .react-resizable-handle::after {
   content: "";
   position: absolute;
-  right: 3px;
-  bottom: 3px;
+  right: 4px;
+  bottom: 4px;
   width: 8px;
   height: 8px;
-  border-right: 2px solid rgba(0, 0, 0, 0.3);
-  border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+  border-right: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+  border-radius: 1px;
 }
 .react-grid-item > .react-resizable-handle.react-resizable-handle-se {
   bottom: 0;
@@ -155,11 +168,11 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
   )
 
   return (
-    <div class="shadcn-root h-[500px] flex flex-col bg-background text-foreground rounded-lg overflow-hidden border border-border">
+    <div class="shadcn-root h-[700px] flex flex-col bg-background text-foreground rounded-lg overflow-hidden border border-border">
       {/* Toolbar */}
-      <div class="flex items-center justify-between px-4 py-2 border-b border-border bg-card">
+      <div class="flex items-center justify-between px-3 py-1.5 border-b border-border bg-card">
         <div class="flex items-center gap-2">
-          <ha-icon icon="mdi:view-dashboard-edit" class="w-5 h-5 text-primary" />
+          <ha-icon icon="mdi:view-dashboard-edit" class="w-4 h-4 text-primary" />
           <span class="font-semibold text-sm">Visual Editor</span>
         </div>
         <div class="flex items-center gap-2 text-xs text-muted-foreground">
@@ -170,7 +183,7 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
       {/* Main editor area */}
       <div class="flex-1 flex overflow-hidden">
         {/* Left: Component Palette */}
-        <div class="w-48 flex-shrink-0">
+        <div class="w-44 flex-shrink-0 border-r border-border">
           <ComponentPalette onAddComponent={handleAddComponent} />
         </div>
 
