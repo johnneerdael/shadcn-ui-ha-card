@@ -11,7 +11,7 @@
 import { h, render } from 'preact'
 import { useState, useCallback, useMemo } from 'preact/hooks'
 import { CardSettings } from './card-settings'
-import { HorizontalPicker } from './horizontal-picker'
+import { ComponentPicker } from './component-picker'
 import { ComponentStyling } from './component-styling'
 import { FullWidthCanvas } from './full-width-canvas'
 import type { CardEditorProps, EditorConfig, LayoutItem, CardTheme } from './types'
@@ -186,9 +186,13 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
     <div class="shadcn-root h-[700px] flex flex-col bg-background text-foreground rounded-lg overflow-hidden border border-border">
       {/* Toolbar - fixed height */}
       <div class="flex-shrink-0 flex items-center justify-between px-3 py-1.5 border-b border-border bg-card">
-        <div class="flex items-center gap-2">
-          <ha-icon icon="mdi:view-dashboard-edit" class="w-4 h-4 text-primary" />
-          <span class="font-semibold text-sm">Visual Editor</span>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <ha-icon icon="mdi:view-dashboard-edit" class="w-4 h-4 text-primary" />
+            <span class="font-semibold text-sm">Visual Editor</span>
+          </div>
+          <div class="h-4 w-px bg-border mx-1" />
+          <ComponentPicker onAddComponent={handleAddComponent} />
         </div>
         <div class="flex items-center gap-2 text-xs text-muted-foreground">
           <span>{layout.length} component{layout.length !== 1 ? 's' : ''}</span>
@@ -200,13 +204,6 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
         <CardSettings
           theme={config.theme}
           onChange={handleThemeChange}
-        />
-      </div>
-
-      {/* 2. Horizontal Component Picker - fixed height, doesn't shrink */}
-      <div class="flex-shrink-0">
-        <HorizontalPicker
-          onAddComponent={handleAddComponent}
         />
       </div>
 
