@@ -18,6 +18,11 @@ import { Tooltip } from '../components/ui/tooltip'
 import type { CardEditorProps, EditorConfig, LayoutItem, CardTheme } from './types'
 import { createLayoutItem } from './types'
 
+// Export utils for FullWidthCanvas drops
+if (typeof window !== 'undefined') {
+  (window as any).ShadcnTemplateCardUtils = { createLayoutItem }
+}
+
 // Import CSS for adoptedStyleSheets
 import 'construct-style-sheets-polyfill'
 import generatedCss from '../globals.css?inline'
@@ -139,13 +144,32 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
   // Handle layout changes from canvas (drag/resize)
   const handleLayoutChange = useCallback(
     (newLayout: LayoutItem[]) => {
-      onChange({
+      // Direct update to config
+      const updatedConfig = {
         ...config,
         layout: newLayout,
-      })
+      }
+      onChange(updatedConfig)
     },
     [config, onChange]
   )
+
+  // Handle opening advanced settings (Card Configuration)
+  const handleOpenConfig = useCallback(() => {
+    // For now, toggle a special "card" selected state or we can add a flag to EditorConfig
+    // But as per plan, we just need to ensure the button does something.
+    // Let's implement a toggle for a "global settings" panel
+    if (selectedId === '__global__') {
+      setSelectedId(null)
+    } else {
+      setSelectedId('__global__')
+    }
+  }, [selectedId])
+
+  // Handle adding a section (UiCard container)
+  const handleAddSection = useCallback(() => {
+    handleAddComponent('UiCard')
+  }, [handleAddComponent])
 
   // Handle component selection
   const handleSelect = useCallback((id: string | null) => {
@@ -195,18 +219,23 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
           </div>
           <div class="flex items-center gap-1">
             <Tooltip content="Undo (Ctrl+Z)">
-              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors flex-shrink-0">
                 <ha-icon icon="mdi:undo" class="w-4 h-4" />
               </button>
             </Tooltip>
             <Tooltip content="Redo (Ctrl+Y)">
-              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors flex-shrink-0">
                 <ha-icon icon="mdi:redo" class="w-4 h-4" />
               </button>
             </Tooltip>
-            <div class="w-px h-4 bg-border mx-1" />
+            <div class="w-px h-4 bg-border mx-1 flex-shrink-0" />
             <Tooltip content="Card Configuration">
-              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+              <button
+                onClick={handleOpenConfig}
+                class={`p-1.5 rounded transition-colors flex-shrink-0 ${
+                  selectedId === '__global__' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'
+                }`}
+              >
                 <ha-icon icon="mdi:cog" class="w-4 h-4" />
               </button>
             </Tooltip>
@@ -217,17 +246,24 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
         <div class="flex items-center justify-between px-3 py-1.5 bg-muted/10">
           <div class="flex items-center gap-3">
             <ComponentPicker onAddComponent={handleAddComponent} />
-            <div class="h-4 w-px bg-border" />
+            <div class="h-4 w-px bg-border flex-shrink-0" />
             <div class="flex items-center gap-1">
               <Tooltip content="Add Section">
-                <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+                <button
+                  onClick={handleAddSection}
+                  class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors flex-shrink-0"
+                >
                   <ha-icon icon="mdi:view-grid-plus" class="w-4 h-4" />
                 </button>
               </Tooltip>
               <Tooltip content="Clean Layout">
                 <button
-                  onClick={() => handleLayoutChange([])}
-                  class="p-1.5 rounded hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors"
+                  onClick={() => {
+                    if (confirm('Are you sure you want to clear the entire layout?')) {
+                      handleLayoutChange([])
+                    }
+                  }}
+                  class="p-1.5 rounded hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors flex-shrink-0"
                 >
                   <ha-icon icon="mdi:layers-remove" class="w-4 h-4" />
                 </button>

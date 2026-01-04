@@ -190,6 +190,26 @@ export function FullWidthCanvas({
     onLayoutChange(updatedLayout)
   }
 
+  // Handle external drops (from ComponentPicker)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onDrop = (_newGridLayout: any[], item: any) => {
+    const componentType = item.i // We store component type in i for the dropping item
+    const newItem = componentRegistry.get(componentType)
+    if (!newItem) return
+
+    // Calculate position from RGL's dropping item
+    const x = item.x
+    const y = item.y
+
+    // Use the addComponent handler indirectly by passing the type back
+    // or just handle it here if we want to be specific about position
+    const { createLayoutItem } = (window as any).ShadcnTemplateCardUtils || {}
+    if (createLayoutItem) {
+      const layoutItem = createLayoutItem(componentType, x, y)
+      onLayoutChange([...layout, layoutItem])
+    }
+  }
+
   // Handle click on empty canvas area (deselect)
   const handleCanvasClick = () => {
     onSelect(null)
@@ -204,9 +224,12 @@ export function FullWidthCanvas({
     width: containerWidth - 32,
     margin: MARGIN,
     onLayoutChange: handleLayoutChange,
+    onDrop: onDrop,
+    isDroppable: true,
     useCSSTransforms: true,
     compactType: null,
     preventCollision: false,
+    droppingItem: { i: '__dropping-elem__', w: 4, h: 2 }
   }
 
   return (
