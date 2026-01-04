@@ -268,9 +268,9 @@ export function Command({
                     >
                       {item.icon && <span>{item.icon}</span>}
                       <div class="flex-1 min-w-0">
-                        <div class="font-medium">{item.label}</div>
+                        <div class="font-medium whitespace-normal">{item.label}</div>
                         {item.description && (
-                          <div class="text-xs text-muted-foreground truncate">{item.description}</div>
+                          <div class="text-xs text-muted-foreground whitespace-normal">{item.description}</div>
                         )}
                       </div>
                     </button>

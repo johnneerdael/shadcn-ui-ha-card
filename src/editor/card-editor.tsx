@@ -14,6 +14,7 @@ import { CardSettings } from './card-settings'
 import { ComponentPicker } from './component-picker'
 import { ComponentStyling } from './component-styling'
 import { FullWidthCanvas } from './full-width-canvas'
+import { Tooltip } from '../components/ui/tooltip'
 import type { CardEditorProps, EditorConfig, LayoutItem, CardTheme } from './types'
 import { createLayoutItem } from './types'
 
@@ -184,18 +185,58 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
 
   return (
     <div class="shadcn-root h-[700px] flex flex-col bg-background text-foreground rounded-lg overflow-hidden border border-border">
-      {/* Toolbar - fixed height */}
-      <div class="flex-shrink-0 flex items-center justify-between px-3 py-1.5 border-b border-border bg-card">
-        <div class="flex items-center gap-3">
+      {/* Toolbar - multi-line */}
+      <div class="flex-shrink-0 border-b border-border bg-card">
+        {/* Row 1: Title and App Actions */}
+        <div class="flex items-center justify-between px-3 py-2 border-b border-border/50">
           <div class="flex items-center gap-2">
             <ha-icon icon="mdi:view-dashboard-edit" class="w-4 h-4 text-primary" />
-            <span class="font-semibold text-sm">Visual Editor</span>
+            <span class="font-bold text-sm tracking-tight">UI Builder</span>
           </div>
-          <div class="h-4 w-px bg-border mx-1" />
-          <ComponentPicker onAddComponent={handleAddComponent} />
+          <div class="flex items-center gap-1">
+            <Tooltip content="Undo (Ctrl+Z)">
+              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+                <ha-icon icon="mdi:undo" class="w-4 h-4" />
+              </button>
+            </Tooltip>
+            <Tooltip content="Redo (Ctrl+Y)">
+              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+                <ha-icon icon="mdi:redo" class="w-4 h-4" />
+              </button>
+            </Tooltip>
+            <div class="w-px h-4 bg-border mx-1" />
+            <Tooltip content="Card Configuration">
+              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+                <ha-icon icon="mdi:cog" class="w-4 h-4" />
+              </button>
+            </Tooltip>
+          </div>
         </div>
-        <div class="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{layout.length} component{layout.length !== 1 ? 's' : ''}</span>
+
+        {/* Row 2: Page Actions & Component Picker */}
+        <div class="flex items-center justify-between px-3 py-1.5 bg-muted/10">
+          <div class="flex items-center gap-3">
+            <ComponentPicker onAddComponent={handleAddComponent} />
+            <div class="h-4 w-px bg-border" />
+            <div class="flex items-center gap-1">
+              <Tooltip content="Add Section">
+                <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors">
+                  <ha-icon icon="mdi:view-grid-plus" class="w-4 h-4" />
+                </button>
+              </Tooltip>
+              <Tooltip content="Clean Layout">
+                <button
+                  onClick={() => handleLayoutChange([])}
+                  class="p-1.5 rounded hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors"
+                >
+                  <ha-icon icon="mdi:layers-remove" class="w-4 h-4" />
+                </button>
+              </Tooltip>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">
+            <span>{layout.length} Layer{layout.length !== 1 ? 's' : ''}</span>
+          </div>
         </div>
       </div>
 
