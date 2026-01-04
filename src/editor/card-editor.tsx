@@ -11,7 +11,7 @@
 import { h, render } from 'preact'
 import { useState, useCallback, useMemo } from 'preact/hooks'
 import { CardSettings } from './card-settings'
-import { ComponentPicker } from './component-picker'
+import { ComponentLibrary } from './component-library'
 import { ComponentStyling } from './component-styling'
 import { FullWidthCanvas } from './full-width-canvas'
 import { Tooltip } from '../components/ui/tooltip'
@@ -212,27 +212,27 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
       {/* Toolbar - multi-line */}
       <div class="flex-shrink-0 border-b border-border bg-card">
         {/* Row 1: Title and App Actions */}
-        <div class="flex items-center justify-between px-3 py-2 border-b border-border/50">
-          <div class="flex items-center gap-2">
-            <ha-icon icon="mdi:view-dashboard-edit" class="w-4 h-4 text-primary" />
-            <span class="font-bold text-sm tracking-tight">UI Builder</span>
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-border/50">
+          <div class="flex items-center gap-3">
+            <ha-icon icon="mdi:view-dashboard-edit" class="w-5 h-5 text-primary shrink-0" />
+            <span class="font-bold text-sm tracking-tight text-foreground">UI Builder</span>
           </div>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-2">
             <Tooltip content="Undo (Ctrl+Z)">
-              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors flex-shrink-0">
+              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors shrink-0">
                 <ha-icon icon="mdi:undo" class="w-4 h-4" />
               </button>
             </Tooltip>
             <Tooltip content="Redo (Ctrl+Y)">
-              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors flex-shrink-0">
+              <button class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors shrink-0">
                 <ha-icon icon="mdi:redo" class="w-4 h-4" />
               </button>
             </Tooltip>
-            <div class="w-px h-4 bg-border mx-1 flex-shrink-0" />
+            <div class="w-px h-5 bg-border mx-1 shrink-0" />
             <Tooltip content="Card Configuration">
               <button
                 onClick={handleOpenConfig}
-                class={`p-1.5 rounded transition-colors flex-shrink-0 ${
+                class={`p-1.5 rounded transition-colors shrink-0 ${
                   selectedId === '__global__' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground'
                 }`}
               >
@@ -242,20 +242,22 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
           </div>
         </div>
 
-        {/* Row 2: Page Actions & Component Picker */}
-        <div class="flex items-center justify-between px-3 py-1.5 bg-muted/10">
-          <div class="flex items-center gap-3">
-            <ComponentPicker onAddComponent={handleAddComponent} />
-            <div class="h-4 w-px bg-border flex-shrink-0" />
-            <div class="flex items-center gap-1">
+        {/* Row 2: Page Actions */}
+        <div class="flex items-center justify-between px-4 py-2 bg-muted/10">
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
               <Tooltip content="Add Section">
                 <button
                   onClick={handleAddSection}
-                  class="p-1.5 rounded hover:bg-muted text-muted-foreground transition-colors flex-shrink-0"
+                  class="flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors text-xs font-medium shrink-0"
                 >
-                  <ha-icon icon="mdi:view-grid-plus" class="w-4 h-4" />
+                  <ha-icon icon="mdi:view-grid-plus" class="w-3.5 h-3.5" />
+                  <span>Add Section</span>
                 </button>
               </Tooltip>
+            </div>
+            <div class="h-5 w-px bg-border shrink-0" />
+            <div class="flex items-center gap-2">
               <Tooltip content="Clean Layout">
                 <button
                   onClick={() => {
@@ -263,15 +265,19 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
                       handleLayoutChange([])
                     }
                   }}
-                  class="p-1.5 rounded hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors flex-shrink-0"
+                  class="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors text-xs font-medium shrink-0"
                 >
-                  <ha-icon icon="mdi:layers-remove" class="w-4 h-4" />
+                  <ha-icon icon="mdi:layers-remove" class="w-3.5 h-3.5" />
+                  <span>Clean Layout</span>
                 </button>
               </Tooltip>
             </div>
           </div>
-          <div class="flex items-center gap-2 text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">
-            <span>{layout.length} Layer{layout.length !== 1 ? 's' : ''}</span>
+          <div class="flex items-center gap-3 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">
+            <div class="flex items-center gap-1.5">
+              <ha-icon icon="mdi:layers-outline" class="w-3 h-3" />
+              <span>{layout.length} Layer{layout.length !== 1 ? 's' : ''}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -281,6 +287,13 @@ function CardEditor({ hass, config, onChange }: CardEditorProps) {
         <CardSettings
           theme={config.theme}
           onChange={handleThemeChange}
+        />
+      </div>
+
+      {/* 2. Component Library - inline, multi-line, categorized */}
+      <div class="flex-shrink-0">
+        <ComponentLibrary
+          onAddComponent={handleAddComponent}
         />
       </div>
 

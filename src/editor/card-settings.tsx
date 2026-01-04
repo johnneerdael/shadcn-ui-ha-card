@@ -28,13 +28,13 @@ function ColorChip({
   onChange: (value: string) => void
 }) {
   return (
-    <div class="flex items-center gap-1.5">
-      <span class="text-[10px] text-muted-foreground">{label}</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[10px] font-medium text-muted-foreground shrink-0">{label}</span>
       <input
         type="color"
         value={value}
         onChange={(e) => onChange((e.target as HTMLInputElement).value)}
-        class="h-5 w-5 rounded border border-input cursor-pointer"
+        class="h-5 w-5 rounded border border-input cursor-pointer shrink-0"
         title={`${label}: ${value}`}
       />
     </div>
@@ -62,8 +62,8 @@ function NumberChip({
   onChange: (value: number) => void
 }) {
   return (
-    <div class="flex items-center gap-1">
-      <span class="text-[10px] text-muted-foreground">{label}</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[10px] font-medium text-muted-foreground shrink-0">{label}</span>
       <input
         type="number"
         min={min}
@@ -71,9 +71,9 @@ function NumberChip({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat((e.target as HTMLInputElement).value) || 0)}
-        class="h-5 w-12 px-1 text-[10px] rounded border border-input bg-background text-foreground font-mono text-right"
+        class="h-5 w-12 px-1 text-[10px] rounded border border-input bg-background text-foreground font-mono text-right shrink-0"
       />
-      <span class="text-[10px] text-muted-foreground">{unit}</span>
+      <span class="text-[10px] font-medium text-muted-foreground shrink-0">{unit}</span>
     </div>
   )
 }
@@ -118,22 +118,22 @@ export function CardSettings({ theme = {}, onChange }: CardSettingsProps) {
       {/* Header with collapse toggle */}
       <button
         type="button"
-        class="w-full flex items-center justify-between px-3 py-1.5 hover:bg-muted/50 transition-colors"
+        class="w-full flex items-center justify-between px-4 py-2 hover:bg-muted/50 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div class="flex items-center gap-2">
-          <ha-icon icon="mdi:palette-outline" class="w-3.5 h-3.5 text-primary" />
-          <span class="text-xs font-medium">Card Theme</span>
+        <div class="flex items-center gap-3">
+          <ha-icon icon="mdi:palette-outline" class="w-4 h-4 text-primary shrink-0" />
+          <span class="text-xs font-bold uppercase tracking-wider text-foreground">Card Theme</span>
         </div>
         <ha-icon
           icon={isExpanded ? 'mdi:chevron-up' : 'mdi:chevron-down'}
-          class="w-3.5 h-3.5 text-muted-foreground"
+          class="w-4 h-4 text-muted-foreground shrink-0"
         />
       </button>
 
       {/* Settings row */}
       {isExpanded && (
-        <div class="flex flex-wrap items-center gap-4 px-3 py-2 border-t border-border/50">
+        <div class="flex flex-wrap items-center gap-6 px-4 py-3 border-t border-border/50 bg-muted/5">
           {/* Colors */}
           <div class="flex items-center gap-3">
             <ColorChip
